@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ГРИНАТОМ | Рапорт</title>
+<<<<<<< HEAD
+=======
+    <link rel="stylesheet" href="styles1.css">
+>>>>>>> 82c877f15f99d1cc7b293e58f00c20c9fff30807
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -409,6 +414,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Левая панель -->
     <div class="left-panel">
@@ -419,14 +425,14 @@
             </div>
             <div class="logo-subtext">РОСАТОМ</div>
         </div>
-        
+
         <div class="user-section">
             <div class="user-name">
                 <i class="fas fa-user-circle"></i>
                 <span id="currentUser">Иван Иванов</span>
             </div>
         </div>
-        
+
         <div class="nav-menu">
             <div class="nav-item active" onclick="showMainPage()">
                 <div class="nav-icon"><i class="fas fa-home"></i></div>
@@ -441,7 +447,7 @@
                 <span>Отчеты</span>
             </div>
         </div>
-        
+
         <div class="logout-section">
             <div class="logout-btn" onclick="logout()">
                 <i class="fas fa-sign-out-alt"></i>
@@ -463,9 +469,9 @@
                 <i class="fas fa-flag-checkered"></i> Завершить смену
             </button>
         </div>
-        
+
         <div class="divider"></div>
-        
+
         <div class="report-title">
             <span id="reportTitle">Загрузка...</span>
             <div class="controls no-print">
@@ -479,9 +485,9 @@
                 </button>
             </div>
         </div>
-        
+
         <div id="statusMessage" class="status-message"></div>
-        
+
         <div class="report-content" id="reportContent">
             <div class="report-table-container">
                 <table class="report-table">
@@ -496,7 +502,7 @@
                         <tr class="building-header">
                             <td colspan="2">Здание 1</td>
                         </tr>
-                        
+
                         <tr>
                             <td>
                                 <span class="row-number">1</span>
@@ -509,7 +515,7 @@
                                 </div>
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <td>
                                 <span class="row-number">2</span>
@@ -522,18 +528,27 @@
                                 </div>
                             </td>
                         </tr>
-                        
-                        <tr><td colspan="2"><div class="separator-line"></div></td></tr>
-                        
+
+                        <tr>
+                            <td colspan="2">
+                                <div class="separator-line"></div>
+                            </td>
+                        </tr>
+
                         <!-- Здание 2 -->
                         <tr class="building-header">
                             <td colspan="2">Здание 2</td>
                         </tr>
-                        
+
                         <tr>
                             <td>
                                 <span class="row-number">3</span>
+<<<<<<< HEAD
                                 Количество принятых и переработанных методом известкования растворов за смену, м³
+=======
+                                Количество принятых и переработанных методом известкования растворов за смену / за
+                                месяц, м³
+>>>>>>> 82c877f15f99d1cc7b293e58f00c20c9fff30807
                             </td>
                             <td>
                                 <div style="display: flex; gap: 5px; justify-content: center;">
@@ -541,7 +556,7 @@
                                 </div>
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <td>
                                 <span class="row-number">4</span>
@@ -553,7 +568,7 @@
                                 </div>
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <td>
                                 <span class="row-number">5</span>
@@ -565,14 +580,18 @@
                                 </div>
                             </td>
                         </tr>
-                        
-                        <tr><td colspan="2"><div class="separator-line"></div></td></tr>
-                        
+
+                        <tr>
+                            <td colspan="2">
+                                <div class="separator-line"></div>
+                            </td>
+                        </tr>
+
                         <!-- Здание 3 -->
                         <tr class="building-header">
                             <td colspan="2">Здание 3</td>
                         </tr>
-                        
+
                         <tr>
                             <td>
                                 <span class="row-number">6</span>
@@ -603,18 +622,26 @@
         const printBtn = document.getElementById('printBtn');
         const reportContent = document.getElementById('reportContent');
         const statusMessage = document.getElementById('statusMessage');
-        
+
         // Элементы для данных отчета
         const currentUser = document.getElementById('currentUser');
+<<<<<<< HEAD
         
         // Текущая дата из системы компьютера
         let currentDate = new Date();
         
+=======
+
+        // Текущая дата
+        let currentDate = new Date('2025-02-01');
+
+>>>>>>> 82c877f15f99d1cc7b293e58f00c20c9fff30807
         // Форматирование даты
         function formatDate(date) {
             const options = { day: 'numeric', month: 'long', year: 'numeric' };
             return date.toLocaleDateString('ru-RU', options);
         }
+<<<<<<< HEAD
         
         // Форматирование даты для ключа в localStorage
         function formatDateKey(date) {
@@ -624,6 +651,9 @@
             return `${year}-${month}-${day}`;
         }
         
+=======
+
+>>>>>>> 82c877f15f99d1cc7b293e58f00c20c9fff30807
         // Обновление отображения даты
         function updateDateDisplay() {
             const formattedDate = formatDate(currentDate);
@@ -635,29 +665,29 @@
         function getCurrentSystemDate() {
             return new Date();
         }
-        
+
         // Сохранение отчета
         function saveDate() {
             updateDateDisplay();
-            
+
             // Сбор данных отчета
             const reportData = collectReportData();
             const dateKey = formatDateKey(currentDate);
             localStorage.setItem(`report_${dateKey}`, JSON.stringify(reportData));
-            
+
             // Показываем сообщение об успехе
             statusMessage.textContent = `Отчет за ${formatDate(currentDate)} сохранен!`;
             statusMessage.className = 'status-message success-message';
             statusMessage.style.display = 'block';
-            
+
             // Скрываем сообщение через 3 секунды
             setTimeout(() => {
                 statusMessage.style.display = 'none';
             }, 3000);
-            
+
             console.log('Отчет сохранен:', reportData);
         }
-        
+
         // Сбор данных отчета
         function collectReportData() {
             return {
@@ -696,81 +726,115 @@
                 operator: currentUser.textContent
             };
         }
-        
+
         // Завершение смены
         function endShift() {
             if (confirm('Вы уверены, что хотите завершить смену? После завершения редактирование будет невозможно.')) {
                 // Сохраняем отчет перед завершением
                 saveDate();
-                
+
                 statusMessage.textContent = 'Смена завершена успешно! Отчет отправлен в архив.';
                 statusMessage.className = 'status-message success-message';
                 statusMessage.style.display = 'block';
-                
+
                 // Блокируем элементы редактирования
                 document.querySelectorAll('.data-input').forEach(input => {
                     input.disabled = true;
                 });
                 saveBtn.disabled = true;
                 endShiftBtn.disabled = true;
-                
+
                 console.log('Смена завершена');
-                
+
                 // Скрываем сообщение через 3 секунды
                 setTimeout(() => {
                     statusMessage.style.display = 'none';
                 }, 3000);
             }
         }
-        
+
         // Управление масштабом
         let currentZoom = 100;
-        
+
         function updateZoom() {
             zoomLevel.textContent = `${currentZoom}%`;
             reportContent.style.transform = `scale(${currentZoom / 100})`;
             reportContent.style.transformOrigin = 'top left';
         }
-        
+
         function zoomIn() {
             if (currentZoom < 150) {
                 currentZoom += 10;
                 updateZoom();
             }
         }
-        
+
         function zoomOut() {
             if (currentZoom > 50) {
                 currentZoom -= 10;
                 updateZoom();
             }
         }
-        
+
         // Печать
         function printReport() {
             window.print();
         }
-        
+
         // Инициализация
         function init() {
+            // Проверка авторизации
+            const userJson = localStorage.getItem('user');
+
+            if (!userJson) {
+                // если не залогинен — назад на логин
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const user = JSON.parse(userJson);
+
             // Установка имени пользователя
+<<<<<<< HEAD
             const username = localStorage.getItem('username') || 'Иван Иванов';
             currentUser.textContent = username;
             
             // Устанавливаем текущую дату из системы
             currentDate = getCurrentSystemDate();
+=======
+            currentUser.textContent = user.fullName || user.username;
+
+
+            // Устанавливаем текущую дату по умолчанию, если не установлена
+            if (!dateInput.value) {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                dateInput.value = `${year}-${month}-${day}`;
+            }
+
+>>>>>>> 82c877f15f99d1cc7b293e58f00c20c9fff30807
             updateDateDisplay();
-            
+
             // Загрузка сохраненного отчета
             loadSavedReport();
-            
+
             // Обработчики событий
+<<<<<<< HEAD
+=======
+            dateInput.addEventListener('change', () => {
+                updateDateDisplay();
+                loadSavedReport();
+            });
+
+>>>>>>> 82c877f15f99d1cc7b293e58f00c20c9fff30807
             saveBtn.addEventListener('click', saveDate);
             endShiftBtn.addEventListener('click', endShift);
             zoomInBtn.addEventListener('click', zoomIn);
             zoomOutBtn.addEventListener('click', zoomOut);
             printBtn.addEventListener('click', printReport);
-            
+
             // Обработка горячих клавиш
             document.addEventListener('keydown', (e) => {
                 // Ctrl + S для сохранения
@@ -778,19 +842,19 @@
                     e.preventDefault();
                     saveDate();
                 }
-                
+
                 // Ctrl + P для печати
                 if (e.ctrlKey && e.key === 'p') {
                     e.preventDefault();
                     printReport();
                 }
-                
+
                 // Ctrl + '+' для увеличения масштаба
                 if (e.ctrlKey && (e.key === '+' || e.key === '=')) {
                     e.preventDefault();
                     zoomIn();
                 }
-                
+
                 // Ctrl + '-' для уменьшения масштаба
                 if (e.ctrlKey && e.key === '-') {
                     e.preventDefault();
@@ -798,15 +862,16 @@
                 }
             });
         }
-        
+
         // Загрузка сохраненного отчета
         function loadSavedReport() {
             const dateKey = formatDateKey(currentDate);
             const savedReport = localStorage.getItem(`report_${dateKey}`);
-            
+
             if (savedReport) {
                 try {
                     const reportData = JSON.parse(savedReport);
+<<<<<<< HEAD
                     
                     // Загружаем данные только если они существуют в сохраненном отчете
                     if (reportData.building1) {
@@ -840,34 +905,62 @@
                         document.getElementById('data6-2').value = reportData.building3.item6.campaign || '';
                     }
                     
+=======
+                    document.getElementById('data1-1').value = reportData.building1.item1.shift || '-';
+                    document.getElementById('data1-2').value = reportData.building1.item1.month || '1';
+                    document.getElementById('data2-1').value = reportData.building1.item2.shift || '-';
+                    document.getElementById('data2-2').value = reportData.building1.item2.month || '1';
+                    document.getElementById('data3-1').value = reportData.building2.item3.shift || '-';
+                    document.getElementById('data3-2').value = reportData.building2.item3.month || '5';
+                    document.getElementById('data4-1').value = reportData.building2.item4.shift || '1';
+                    document.getElementById('data4-2').value = reportData.building2.item4.month || '9';
+                    document.getElementById('data5-1').value = reportData.building2.item5.shift || '1';
+                    document.getElementById('data5-2').value = reportData.building2.item5.month || '10';
+                    document.getElementById('data6-1').value = reportData.building3.item6.shift || '-';
+                    document.getElementById('data6-2').value = reportData.building3.item6.campaign || '--';
+
+>>>>>>> 82c877f15f99d1cc7b293e58f00c20c9fff30807
                     console.log('Отчет загружен:', dateKey);
                 } catch (e) {
                     console.error('Ошибка загрузки отчета:', e);
                 }
             }
         }
-        
+
         // Выход из системы
         function logout() {
-            localStorage.removeItem('username');
+            localStorage.removeItem('user');
+            localStorage.removeItem('role');
             window.location.href = 'index.html';
         }
-        
+
+
         // Навигация
         function showMainPage() {
             alert('Вы находитесь на главной странице');
         }
-        
+
         function showReports() {
             alert('Раздел "Рапорты" находится в разработке');
         }
-        
+
         function showDocuments() {
             alert('Раздел "Отчеты" находится в разработке');
         }
-        
+
         // Запуск при загрузке страницы
         window.addEventListener('DOMContentLoaded', init);
+
+
+
+        // учёт роли
+        // Раз уж роль уже есть, можно заложить будущее:
+
+        // if (user.role !== 'ENGINEER') {
+        //     alert('У вас нет прав для заполнения смены');
+        //     window.location.href = 'index.html';
+        // }
     </script>
 </body>
+
 </html>
