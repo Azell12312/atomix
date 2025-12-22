@@ -1,0 +1,10 @@
+DELETE FROM shift_note;
+DELETE FROM report_value;
+DELETE FROM inventory_line;
+DELETE FROM report_item_instance;
+DELETE FROM shift_session;
+DELETE FROM report_item_template;
+DELETE FROM building;
+DELETE FROM app_user;
+DELETE FROM section;
+DELETE FROM shift;
