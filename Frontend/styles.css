@@ -53,11 +53,11 @@ body {
 .vertical-line {
     width: 2px;
     height: 80px;
-    background: linear-gradient(to bottom, 
-        transparent 0%, 
-        #1a56b6 15%, 
-        #1a56b6 85%, 
-        transparent 100%);
+    background: linear-gradient(to bottom,
+            transparent 0%,
+            #1a56b6 15%,
+            #1a56b6 85%,
+            transparent 100%);
     opacity: 0.6;
 }
 
@@ -180,35 +180,35 @@ input:focus {
         margin: 20px auto;
         max-width: 90%;
     }
-    
+
     .logo-with-image {
         gap: 20px;
         flex-direction: column;
         text-align: center;
     }
-    
+
     .vertical-line {
         width: 80px;
         height: 2px;
-        background: linear-gradient(to right, 
-            transparent 0%, 
-            #1a56b6 15%, 
-            #1a56b6 85%, 
-            transparent 100%);
+        background: linear-gradient(to right,
+                transparent 0%,
+                #1a56b6 15%,
+                #1a56b6 85%,
+                transparent 100%);
     }
-    
+
     .logo-texts {
         text-align: center;
     }
-    
+
     .logo-main {
         font-size: 26px;
     }
-    
+
     .logo-sub {
         font-size: 22px;
     }
-    
+
     .logo-img {
         width: 80px;
         height: 80px;
