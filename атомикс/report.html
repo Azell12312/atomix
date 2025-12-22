@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ГРИНАТОМ | Рапорт</title>
+            <link rel="stylesheet" href="styles1.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body>
+    <!-- Левая панель -->
+    <div class="left-panel">
+        <div class="panel-header">
+            <div class="panel-logo">
+                <div class="logo-text">ГРИНАТОМ</div>
+            </div>
+            <div class="logo-subtext">РОСАТОМ</div>
+        </div>
+        
+        <div class="user-section">
+            <div class="user-name">
+                <i class="fas fa-user-circle"></i>
+                <span id="currentUser">Иван Иванов</span>
+            </div>
+        </div>
+        
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="showMainPage()">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <span>Главная страница</span>
+            </div>
+            <div class="nav-item" onclick="showReports()">
+                <div class="nav-icon"><i class="fas fa-file-alt"></i></div>
+                <span>Рапорты</span>
+            </div>
+            <div class="nav-item" onclick="showDocuments()">
+                <div class="nav-icon"><i class="fas fa-chart-bar"></i></div>
+                <span>Отчеты</span>
+            </div>
+        </div>
+        
+        <div class="logout-section">
+            <div class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Выйти</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контейнер из вашего кода -->
+    <div class="main-container">
+        <div class="header">
+            <div class="date-section">
+                <div class="date-display" id="dateDisplay">1 февраля 2025 г.</div>
+                <input type="date" class="date-input no-print" id="dateInput" value="2025-02-01">
+                <button class="btn btn-save no-print" id="saveBtn">
+                    <i class="fas fa-save"></i> Сохранить
+                </button>
+            </div>
+            <button class="btn btn-end-shift no-print" id="endShiftBtn">
+                <i class="fas fa-flag-checkered"></i> Завершить смену
+            </button>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="report-title">
+            <span id="reportTitle">Рапорт за 1 февраля 2025</span>
+            <div class="controls no-print">
+                <div class="zoom-controls">
+                    <button class="zoom-btn" id="zoomOutBtn">-</button>
+                    <span class="zoom-level" id="zoomLevel">100%</span>
+                    <button class="zoom-btn" id="zoomInBtn">+</button>
+                </div>
+                <button class="btn btn-print" id="printBtn">
+                    <i class="fas fa-print"></i> Печать
+                </button>
+            </div>
+        </div>
+        
+        <div id="statusMessage" class="status-message"></div>
+        
+        <div class="report-content" id="reportContent">
+            <!-- Вместо контента-заглушки вставляем таблицу отчета -->
+            <div class="report-table-container">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th width="70%">Наименование отчетной позиции</th>
+                            <th width="30%">1-я смена «7:00–15:00»</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Здание 1 -->
+                        <tr class="building-header">
+                            <td colspan="2">Здание 1</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span class="row-number">1</span>
+                                Количество принятых и переработанных методом аммиачного осаждения растворов
+                                <div class="sub-description">за смену / за месяц, м³</div>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 5px; justify-content: center;">
+                                    <input type="text" class="data-input" id="data1-1" value="-">
+                                    <span>/</span>
+                                    <input type="text" class="data-input" id="data1-2" value="1">
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span class="row-number">2</span>
+                                Количество прокаленной пульпы
+                                <div class="sub-description">за смену / за месяц, м³</div>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 5px; justify-content: center;">
+                                    <input type="text" class="data-input" id="data2-1" value="-">
+                                    <span>/</span>
+                                    <input type="text" class="data-input" id="data2-2" value="1">
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr><td colspan="2"><div class="separator-line"></div></td></tr>
+                        
+                        <!-- Здание 2 -->
+                        <tr class="building-header">
+                            <td colspan="2">Здание 2</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span class="row-number">3</span>
+                                Количество принятых и переработанных методом известкования растворов за смену / за месяц, м³
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 5px; justify-content: center;">
+                                    <input type="text" class="data-input" id="data3-1" value="-">
+                                    <span>/</span>
+                                    <input type="text" class="data-input" id="data3-2" value="5">
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span class="row-number">4</span>
+                                Отфильтровано пульпы за смену / за месяц, м³
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 5px; justify-content: center;">
+                                    <input type="text" class="data-input" id="data4-1" value="1">
+                                    <span>/</span>
+                                    <input type="text" class="data-input" id="data4-2" value="9">
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span class="row-number">5</span>
+                                Получено контейнеров, за смену / за месяц, шт.
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 5px; justify-content: center;">
+                                    <input type="text" class="data-input" id="data5-1" value="1">
+                                    <span>/</span>
+                                    <input type="text" class="data-input" id="data5-2" value="10">
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr><td colspan="2"><div class="separator-line"></div></td></tr>
+                        
+                        <!-- Здание 3 -->
+                        <tr class="building-header">
+                            <td colspan="2">Здание 3</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span class="row-number">6</span>
+                                Сжигание отходов
+                                <div class="sub-description">— переработано отходов за смену / за кампанию, кг</div>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 5px; justify-content: center;">
+                                    <input type="text" class="data-input" id="data6-1" value="-">
+                                    <span>/</span>
+                                    <input type="text" class="data-input" id="data6-2" value="--">
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Элементы DOM из вашего кода
+        const dateDisplay = document.getElementById('dateDisplay');
+        const dateInput = document.getElementById('dateInput');
+        const saveBtn = document.getElementById('saveBtn');
+        const endShiftBtn = document.getElementById('endShiftBtn');
+        const reportTitle = document.getElementById('reportTitle');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomLevel = document.getElementById('zoomLevel');
+        const printBtn = document.getElementById('printBtn');
+        const reportContent = document.getElementById('reportContent');
+        const statusMessage = document.getElementById('statusMessage');
+        
+        // Элементы для данных отчета
+        const currentUser = document.getElementById('currentUser');
+        
+        // Текущая дата
+        let currentDate = new Date('2025-02-01');
+
+        // Форматирование даты
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return date.toLocaleDateString('ru-RU', options);
+        }
+        
+        // Обновление отображения даты
+        function updateDateDisplay() {
+            const formattedDate = formatDate(dateInput.value);
+            dateDisplay.textContent = formattedDate;
+            reportTitle.textContent = `Рапорт за ${formattedDate}`;
+            currentDate = new Date(dateInput.value);
+        }
+        
+        // Сохранение отчета
+        function saveDate() {
+            updateDateDisplay();
+            
+            // Сбор данных отчета
+            const reportData = collectReportData();
+            const dateKey = currentDate.toISOString().split('T')[0];
+            localStorage.setItem(`report_${dateKey}`, JSON.stringify(reportData));
+            
+            // Показываем сообщение об успехе
+            statusMessage.textContent = `Отчет за ${formatDate(dateInput.value)} сохранен!`;
+            statusMessage.className = 'status-message success-message';
+            statusMessage.style.display = 'block';
+            
+            // Скрываем сообщение через 3 секунды
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 3000);
+            
+            console.log('Отчет сохранен:', reportData);
+        }
+        
+        // Сбор данных отчета
+        function collectReportData() {
+            return {
+                date: currentDate.toISOString().split('T')[0],
+                building1: {
+                    item1: { shift: document.getElementById('data1-1').value, month: document.getElementById('data1-2').value },
+                    item2: { shift: document.getElementById('data2-1').value, month: document.getElementById('data2-2').value }
+                },
+                building2: {
+                    item3: { shift: document.getElementById('data3-1').value, month: document.getElementById('data3-2').value },
+                    item4: { shift: document.getElementById('data4-1').value, month: document.getElementById('data4-2').value },
+                    item5: { shift: document.getElementById('data5-1').value, month: document.getElementById('data5-2').value }
+                },
+                building3: {
+                    item6: { shift: document.getElementById('data6-1').value, campaign: document.getElementById('data6-2').value }
+                },
+                timestamp: new Date().toISOString(),
+                operator: currentUser.textContent
+            };
+        }
+        
+        // Завершение смены
+        function endShift() {
+            if (confirm('Вы уверены, что хотите завершить смену? После завершения редактирование будет невозможно.')) {
+                // Сохраняем отчет перед завершением
+                saveDate();
+                
+                statusMessage.textContent = 'Смена завершена успешно! Отчет отправлен в архив.';
+                statusMessage.className = 'status-message success-message';
+                statusMessage.style.display = 'block';
+                
+                // Блокируем элементы редактирования
+                document.querySelectorAll('.data-input').forEach(input => {
+                    input.disabled = true;
+                });
+                dateInput.disabled = true;
+                saveBtn.disabled = true;
+                endShiftBtn.disabled = true;
+                
+                console.log('Смена завершена');
+                
+                // Скрываем сообщение через 3 секунды
+                setTimeout(() => {
+                    statusMessage.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        // Управление масштабом
+        let currentZoom = 100;
+        
+        function updateZoom() {
+            zoomLevel.textContent = `${currentZoom}%`;
+            reportContent.style.transform = `scale(${currentZoom / 100})`;
+            reportContent.style.transformOrigin = 'top left';
+        }
+        
+        function zoomIn() {
+            if (currentZoom < 150) {
+                currentZoom += 10;
+                updateZoom();
+            }
+        }
+        
+        function zoomOut() {
+            if (currentZoom > 50) {
+                currentZoom -= 10;
+                updateZoom();
+            }
+        }
+        
+        // Печать
+        function printReport() {
+            window.print();
+        }
+        
+        // Инициализация
+        function init() {
+            // Установка имени пользователя
+            const username = localStorage.getItem('username') || 'Иван Иванов';
+            currentUser.textContent = username;
+            
+            // Устанавливаем текущую дату по умолчанию, если не установлена
+            if (!dateInput.value) {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                dateInput.value = `${year}-${month}-${day}`;
+            }
+            
+            updateDateDisplay();
+            
+            // Загрузка сохраненного отчета
+            loadSavedReport();
+            
+            // Обработчики событий
+            dateInput.addEventListener('change', () => {
+                updateDateDisplay();
+                loadSavedReport();
+            });
+            
+            saveBtn.addEventListener('click', saveDate);
+            endShiftBtn.addEventListener('click', endShift);
+            zoomInBtn.addEventListener('click', zoomIn);
+            zoomOutBtn.addEventListener('click', zoomOut);
+            printBtn.addEventListener('click', printReport);
+            
+            // Обработка горячих клавиш
+            document.addEventListener('keydown', (e) => {
+                // Ctrl + S для сохранения
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    saveDate();
+                }
+                
+                // Ctrl + P для печати
+                if (e.ctrlKey && e.key === 'p') {
+                    e.preventDefault();
+                    printReport();
+                }
+                
+                // Ctrl + '+' для увеличения масштаба
+                if (e.ctrlKey && (e.key === '+' || e.key === '=')) {
+                    e.preventDefault();
+                    zoomIn();
+                }
+                
+                // Ctrl + '-' для уменьшения масштаба
+                if (e.ctrlKey && e.key === '-') {
+                    e.preventDefault();
+                    zoomOut();
+                }
+            });
+        }
+        
+        // Загрузка сохраненного отчета
+        function loadSavedReport() {
+            const dateKey = currentDate.toISOString().split('T')[0];
+            const savedReport = localStorage.getItem(`report_${dateKey}`);
+            
+            if (savedReport) {
+                try {
+                    const reportData = JSON.parse(savedReport);
+                    document.getElementById('data1-1').value = reportData.building1.item1.shift || '-';
+                    document.getElementById('data1-2').value = reportData.building1.item1.month || '1';
+                    document.getElementById('data2-1').value = reportData.building1.item2.shift || '-';
+                    document.getElementById('data2-2').value = reportData.building1.item2.month || '1';
+                    document.getElementById('data3-1').value = reportData.building2.item3.shift || '-';
+                    document.getElementById('data3-2').value = reportData.building2.item3.month || '5';
+                    document.getElementById('data4-1').value = reportData.building2.item4.shift || '1';
+                    document.getElementById('data4-2').value = reportData.building2.item4.month || '9';
+                    document.getElementById('data5-1').value = reportData.building2.item5.shift || '1';
+                    document.getElementById('data5-2').value = reportData.building2.item5.month || '10';
+                    document.getElementById('data6-1').value = reportData.building3.item6.shift || '-';
+                    document.getElementById('data6-2').value = reportData.building3.item6.campaign || '--';
+                    
+                    console.log('Отчет загружен:', dateKey);
+                } catch (e) {
+                    console.error('Ошибка загрузки отчета:', e);
+                }
+            }
+        }
+        
+        // Выход из системы
+        function logout() {
+            localStorage.removeItem('username');
+            window.location.href = 'index.html';
+        }
+        
+        // Навигация
+        function showMainPage() {
+            alert('Вы находитесь на главной странице');
+        }
+        
+        function showReports() {
+            alert('Раздел "Рапорты" находится в разработке');
+        }
+        
+        function showDocuments() {
+            alert('Раздел "Отчеты" находится в разработке');
+        }
+        
+        // Запуск при загрузке страницы
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

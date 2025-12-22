@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ГРИНАТОМ | РОСАТОМ - Вход</title>
+        <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+                <div class="logo-image">
+                <img src="Росатом.png" alt="Логотип Росатом" class="logo-img">
+            <div class="logo-main">ГРИНАТОМ</div>
+            <div class="logo-sub">РОСАТОМ</div>
+        </div>
+        
+        <form class="login-form" id="loginForm">
+            <div class="form-group">
+                <label for="username">Логин</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="username" name="username" placeholder="Введите логин" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" placeholder="Введите пароль" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="login-button">
+                <i class="fas fa-sign-in-alt"></i> Войти в систему
+            </button>
+        </form>
+        
+        <div class="footer-text">
+            Система производственного учета ГРИНАТОМ
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username && password) {
+                // Сохраняем логин в localStorage
+                localStorage.setItem('username', username);
+                // Переходим на главную страницу отчета
+                window.location.href = 'report.html';
+            } else {
+                alert('Пожалуйста, заполните все поля');
+            }
+        });
+        
+        // Автозаполнение для тестирования
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('username').value = 'operator001';
+            document.getElementById('password').value = 'password123';
+        });
+    </script>
+</body>
+</html>
