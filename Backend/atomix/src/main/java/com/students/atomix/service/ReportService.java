@@ -44,32 +44,34 @@ public class ReportService {
 
         for (ItemValueDTO item : request.getItems()) {
 
-            ReportItemTemplate template;
+        	ReportItemTemplate template;
 
-            if (item.getTemplateId() != null) {
-                template = templateRepository.findById(item.getTemplateId())
-                        .orElseThrow();
-            } else {
-                template = new ReportItemTemplate();
-                template.setTitle(item.getCustomTitle());
-                template.setBuildingId(item.getBuildingId());
-                template.setActive(false);
-                template.setIsInventory(false);
-                template = templateRepository.save(template);
-            }
+        	if (item.getTemplateId() != null) {
+        	    template = templateRepository.findById(item.getTemplateId())
+        	            .orElseThrow();
+        	} else {
+        	    template = new ReportItemTemplate();
+        	    template.setTitle(item.getCustomTitle());
+        	    template.setBuildingId(item.getBuildingId());
+        	    template.setActive(false);
+        	    template.setIsInventory(false);
+        	    template = templateRepository.save(template);
+        	}
 
-            ReportItemInstance instance = instanceRepository
-                    .findByShiftDateAndSectionIdAndTemplateId(
-                            date, sectionId, template.getId()
-                    )
-                    .orElseGet(() -> {
-                        ReportItemInstance i = new ReportItemInstance();
-                        i.setShiftDate(date);
-                        i.setSectionId(sectionId);
-                        i.setTemplate(template);
-                        i.setOrderIndex(0);
-                        return instanceRepository.save(i);
-                    });
+        	ReportItemInstance instance = instanceRepository
+        	        .findByShiftDateAndSectionIdAndTemplateId(
+        	                date, sectionId, template.getId()
+        	        )
+        	        .orElse(null);
+
+        	if (instance == null) {
+        	    instance = new ReportItemInstance();
+        	    instance.setShiftDate(date);
+        	    instance.setSectionId(sectionId);
+        	    instance.setTemplate(template);
+        	    instance.setOrderIndex(0);
+        	    instance = instanceRepository.save(instance);
+        	}
 
             ReportValue value = new ReportValue();
             value.setShiftSession(session);

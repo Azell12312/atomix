@@ -6,18 +6,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/reports")
+@RequestMapping("/api/report")
 @CrossOrigin(origins = "http://127.0.0.1:5500")
 public class ReportController {
 
-    private final ReportService reportService;
+	private final ReportService reportService;
 
     public ReportController(ReportService reportService) {
         this.reportService = reportService;
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Void> save(@RequestBody ReportSaveRequestDTO request) {
+    public ResponseEntity<?> saveReport(@RequestBody ReportSaveRequestDTO request) {
         reportService.saveReport(request);
         return ResponseEntity.ok().build();
     }

@@ -2,8 +2,8 @@ package com.students.atomix.dto;
 
 public class ItemValueDTO {
 
-    private Long templateId;      // null если введено вручную
-    private String customTitle;   // если templateId == null
+    private Long templateId;     // если выбрали из dropdown
+    private String customTitle;  // если ввели вручную
     private Long buildingId;
 
     private Double valueNumber;
