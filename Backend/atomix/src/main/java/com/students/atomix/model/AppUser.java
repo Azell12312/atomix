@@ -20,7 +20,7 @@ public class AppUser {
     private String username;
 
     @Column(nullable = false)
-    private String password;   // ХРАНИМ ХЭШ, НЕ ЧИСТЫЙ ПАРОЛЬ
+    private String password;   
 
     @Column(nullable = false)
     private String fullName;
