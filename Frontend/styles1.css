@@ -401,3 +401,48 @@ body {
         display: none !important;
     }
 }
+.free-space-row {
+    height: 60px;
+}
+
+.free-space-row.active {
+    background-color: #e6f3ff;
+    min-height: 80px;
+}
+
+.add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1e3a5f;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 15px;
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    margin: 5px;
+    transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+    background-color: #f0f7ff;
+    border-color: #1e3a5f;
+}
+
+.expanded-content {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 5px;
+}
+
+.dropdown-menu {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
