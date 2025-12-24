@@ -303,7 +303,7 @@ function addCustomField(buttonElement) {
     closeActiveFreeSpace();
     
     // Показываем сообщение об успешном добавлении
-    showStatusMessage(`Поле "${fieldName}" успешно добавлено`, 'success');
+    showStatusMessage(`Поле "${fieldName}" успешно добавлено`, 'success-message');
     
     // Фокусируемся на новом поле ввода
     setTimeout(() => {
@@ -589,53 +589,77 @@ function loadSavedReport() {
 // Вставка пользовательского поля при загрузке
 function insertCustomField(fieldInfo, shiftValue) {
     if (!tableBody) return;
-    
-    // Находим соответствующее здание
+
+    // Находим заголовок нужного здания
     const buildingHeaders = tableBody.querySelectorAll('.building-header');
     let targetBuildingRow = null;
-    
-    for (let header of buildingHeaders) {
-        if (header.querySelector('td').textContent.trim() === fieldInfo.building) {
+
+    for (const header of buildingHeaders) {
+        const title = header.querySelector('td')?.textContent?.trim();
+        if (title === fieldInfo.building) {
             targetBuildingRow = header;
             break;
         }
     }
-    
+
+    // Ищем свободную строку внутри выбранного здания
+    let freeSpaceRow = null;
+
     if (targetBuildingRow) {
-        // Находим следующую свободную строку после этого здания
         let currentRow = targetBuildingRow;
-        let freeSpaceRow = null;
-        
-        while (currentRow.nextElementSibling) {
+
+        while (currentRow && currentRow.nextElementSibling) {
             currentRow = currentRow.nextElementSibling;
+
+            // дошли до следующего здания — выходим
+            if (currentRow.classList.contains('building-header')) break;
+
             if (currentRow.classList.contains('free-space-row')) {
                 freeSpaceRow = currentRow;
                 break;
             }
         }
-        
-        if (freeSpaceRow) {
-            // Создаем новую строку с полем
-            const newRow = document.createElement('tr');
-            newRow.dataset.fieldId = fieldInfo.id;
-            newRow.dataset.isCustom = 'true';
-            newRow.innerHTML = `
-                <td>
-                    <span class="row-number">${fieldInfo.rowNumber}</span>
-                    ${fieldInfo.name}
-                    ${fieldInfo.unit ? `<div class="sub-description">${fieldInfo.unit}</div>` : ''}
-                </td>
-                <td>
-                    <div style="display: flex; gap: 5px; justify-content: center;">
-                        <input type="text" class="data-input" id="${fieldInfo.id}_shift" value="${shiftValue || ''}">
-                    </div>
-                </td>
-            `;
-            
-            // Вставляем новую строку перед блоком свободного места
-            tableBody.insertBefore(newRow, freeSpaceRow);
-        }
     }
+
+    // Fallback: первая свободная строка в таблице
+    if (!freeSpaceRow) {
+        freeSpaceRow = tableBody.querySelector('.free-space-row');
+    }
+
+    if (!freeSpaceRow) return;
+
+    // Защита от дублей при повторной загрузке
+    const existingRow = tableBody.querySelector(`tr[data-field-id="${fieldInfo.id}"]`);
+    if (existingRow) {
+        const existingInput = document.getElementById(`${fieldInfo.id}_shift`);
+        if (existingInput) existingInput.value = shiftValue || '';
+        return;
+    }
+
+    const unit = (fieldInfo.unit || '').toString().trim();
+
+    // Создаем строку с полем
+    const newRow = document.createElement('tr');
+    newRow.dataset.fieldId = fieldInfo.id;
+    newRow.dataset.isCustom = 'true';
+    newRow.innerHTML = `
+        <td>
+            <span class="row-number">${fieldInfo.rowNumber || ''}</span>
+            ${fieldInfo.name || ''}
+            ${unit ? `<div class="sub-description">${unit}</div>` : ''}
+        </td>
+        <td>
+            <div style="display: flex; gap: 5px; justify-content: center;">
+                <input type="text" class="data-input" id="${fieldInfo.id}_shift">
+            </div>
+        </td>
+    `;
+
+    tableBody.insertBefore(newRow, freeSpaceRow);
+
+    // Восстанавливаем сохраненное значение
+    const input = document.getElementById(`${fieldInfo.id}_shift`);
+    if (input) input.value = shiftValue || '';
 }
 
 // Обновление нумерации строк
