@@ -37,6 +37,12 @@ public class ShiftService {
 	@Transactional
 	public ShiftStartResponseDTO startShift(ShiftStartRequestDTO dto) {
 
+		// Check if session is already started
+		shiftSessionRepository.findTopByUserIdAndStatusOrderByStartedAtDesc(dto.getUserId(), ShiftStatus.OPEN)
+				.ifPresent(s -> {
+					throw new RuntimeException("SHIFT_ALREADY_OPEN");
+				});
+
 		Shift shift = shiftRepository.findById(dto.getShiftId())
 				.orElseThrow(() -> new RuntimeException("SHIFT_NOT_FOUND"));
 
