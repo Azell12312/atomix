@@ -306,20 +306,26 @@
 
 // Функция для переключения свободного места
 function toggleFreeSpace(element) {
+    console.log('toggleFreeSpace вызван для элемента:', element);
+    
     const row = element.closest('tr');
+    console.log('Найдена строка:', row);
     
     // Если уже активно другое свободное место - закрываем его
     if (activeFreeSpace && activeFreeSpace !== row) {
+        console.log('Закрываем предыдущее активное место');
         closeActiveFreeSpace();
     }
     
     // Если текущее место уже активно - закрываем
     if (row.classList.contains('active')) {
+        console.log('Закрываем текущее активное место');
         closeActiveFreeSpace();
         return;
     }
     
     // Активируем текущее место
+    console.log('Активируем строку');
     row.classList.add('active');
     activeFreeSpace = row;
     
@@ -341,6 +347,8 @@ function toggleFreeSpace(element) {
     // Вставляем расширенное содержимое после текущей строки
     row.parentNode.insertBefore(expandedRow, row.nextSibling);
     
+    console.log('Расширенное содержимое добавлено');
+    
     // Автоматически фокусируемся на выпадающем меню
     setTimeout(() => {
         const dropdown = expandedRow.querySelector('.dropdown-menu');
@@ -348,16 +356,108 @@ function toggleFreeSpace(element) {
     }, 100);
 }
 
+// Обработчик изменения выпадающего меню
+function handleMenuChange(selectElement) {
+    console.log('handleMenuChange вызван, выбрано значение:', selectElement.value);
+    
+    const container = document.getElementById('customFieldContainer');
+    if (!container) {
+        console.error('Контейнер customFieldContainer не найден');
+        return;
+    }
+    
+    if (selectElement.value === 'manual') {
+        container.innerHTML = `
+            <div style="margin-bottom: 15px;">
+                <input type="text" class="custom-field-input field-name-input" 
+                       placeholder="Введите название нового поля"
+                       onkeydown="handleCustomFieldKeydown(event, this)"
+                       style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                    <span style="color: #666; font-size: 0.9em; white-space: nowrap;">Единица измерения:</span>
+                    <select class="unit-select" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                        <option value="">Выберите единицу</option>
+                        <option value="кг">кг</option>
+                        <option value="м³">м³</option>
+                        <option value="шт">шт</option>
+                        <option value="л">л</option>
+                        <option value="т">т</option>
+                        <option value="г">г</option>
+                        <option value="ед">ед</option>
+                        <option value="пак">пак</option>
+                        <option value="бут">бут</option>
+                        <option value="custom">Другая...</option>
+                    </select>
+                </div>
+                
+                <div id="customUnitContainer" style="margin-top: 10px; display: none;">
+                    <input type="text" class="custom-unit-input" 
+                           placeholder="Введите свою единицу измерения"
+                           style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                </div>
+            </div>
+            <button class="btn add-field-btn" onclick="addCustomField(this)" style="margin-top: 10px; width: 100%; padding: 10px; background-color: #1e3a5f; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                <i class="fas fa-plus"></i> Добавить поле
+            </button>
+        `;
+        
+        // Добавляем обработчик для выбора "Другая..."
+        const unitSelect = container.querySelector('.unit-select');
+        if (unitSelect) {
+            unitSelect.addEventListener('change', function() {
+                const customUnitContainer = document.getElementById('customUnitContainer');
+                if (this.value === 'custom') {
+                    customUnitContainer.style.display = 'block';
+                    const customInput = customUnitContainer.querySelector('.custom-unit-input');
+                    if (customInput) customInput.focus();
+                } else {
+                    customUnitContainer.style.display = 'none';
+                }
+            });
+        }
+        
+        // Автоматически фокусируемся на поле ввода названия
+        setTimeout(() => {
+            const nameInput = container.querySelector('.field-name-input');
+            if (nameInput) {
+                nameInput.focus();
+                console.log('Фокус установлен на поле ввода названия');
+            }
+        }, 100);
+    } else {
+        container.innerHTML = '';
+    }
+}
+
+// Обработчик нажатия клавиши Enter в поле ввода
+function handleCustomFieldKeydown(event, inputElement) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        const container = inputElement.closest('#customFieldContainer');
+        if (container) {
+            const addButton = container.querySelector('.add-field-btn');
+            if (addButton) {
+                console.log('Enter нажат, вызываем addCustomField');
+                addCustomField(addButton);
+            }
+        }
+    }
+}
+
 // Функция для добавления пользовательского поля
 function addCustomField(buttonElement) {
+    console.log('addCustomField вызван');
+    
     const container = buttonElement.closest('#customFieldContainer');
     if (!container) {
-        console.error('Контейнер не найден');
+        console.error('Контейнер customFieldContainer не найден');
         return;
     }
     
     const nameInput = container.querySelector('.field-name-input');
-    const unitInput = container.querySelector('.unit-input');
+    const unitSelect = container.querySelector('.unit-select');
+    const customUnitInput = container.querySelector('.custom-unit-input');
     
     if (!nameInput) {
         console.error('Поле ввода названия не найдено');
@@ -365,7 +465,18 @@ function addCustomField(buttonElement) {
     }
     
     const fieldName = nameInput.value.trim();
-    const unit = unitInput ? unitInput.value.trim() : '';
+    let unit = '';
+    
+    if (unitSelect) {
+        if (unitSelect.value === 'custom' && customUnitInput) {
+            unit = customUnitInput.value.trim();
+        } else if (unitSelect.value) {
+            unit = unitSelect.value;
+        }
+    }
+    
+    console.log('Название поля:', fieldName);
+    console.log('Единица измерения:', unit);
     
     if (!fieldName) {
         alert('Пожалуйста, введите название поля');
@@ -422,7 +533,12 @@ function addCustomField(buttonElement) {
     nextRowNumber++;
     
     // Вставляем новую строку перед блоком свободного места
-    tableBody.insertBefore(newRow, freeSpaceRow);
+    if (tableBody) {
+        tableBody.insertBefore(newRow, freeSpaceRow);
+        console.log('Строка добавлена в таблицу');
+    } else {
+        console.error('tableBody не найден');
+    }
     
     // Закрываем расширенное содержимое
     closeActiveFreeSpace();
@@ -433,49 +549,35 @@ function addCustomField(buttonElement) {
     // Фокусируемся на новом поле ввода
     setTimeout(() => {
         const newInput = document.getElementById(`${fieldId}_shift`);
-        if (newInput) newInput.focus();
+        if (newInput) {
+            newInput.focus();
+            console.log('Фокус установлен на новое поле ввода');
+        }
     }, 100);
     
     // Автоматически сохраняем после добавления поля
     setTimeout(saveDate, 500);
 }
 
-// Обработчик изменения выпадающего меню - исправленная версия
-function handleMenuChange(selectElement) {
-    const container = document.getElementById('customFieldContainer');
-    if (!container) return;
-    
-    if (selectElement.value === 'manual') {
-        container.innerHTML = `
-            <div style="margin-bottom: 15px;">
-                <input type="text" class="custom-field-input field-name-input" 
-                       placeholder="Введите название нового поля"
-                       onkeydown="handleCustomFieldKeydown(event, this)"
-                       style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-                <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
-                    <span style="color: #666; font-size: 0.9em; white-space: nowrap;">Единица измерения:</span>
-                    <input type="text" class="unit-input" 
-                           placeholder="кг, м³, шт и т.д."
-                           onkeydown="handleUnitFieldKeydown(event, this)"
-                           style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-                </div>
-            </div>
-            <button class="btn" onclick="addCustomField(this)" style="margin-top: 10px; width: 100%; padding: 10px; background-color: #1e3a5f; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                <i class="fas fa-plus"></i> Добавить поле
-            </button>
-        `;
+// Функция для закрытия активного свободного места
+function closeActiveFreeSpace() {
+    if (activeFreeSpace) {
+        console.log('Закрываем активное свободное место');
+        activeFreeSpace.classList.remove('active');
+        const expandedRow = activeFreeSpace.nextElementSibling;
+        if (expandedRow && expandedRow.classList.contains('expanded-row')) {
+            expandedRow.remove();
+            console.log('Расширенная строка удалена');
+        }
+        activeFreeSpace = null;
         
-        // Автоматически фокусируемся на поле ввода названия
-        setTimeout(() => {
-            const nameInput = container.querySelector('.field-name-input');
-            if (nameInput) nameInput.focus();
-        }, 100);
-    } else {
-        container.innerHTML = '';
+        // Очищаем контейнер
+        const container = document.getElementById('customFieldContainer');
+        if (container) container.innerHTML = '';
     }
 }
 
-// Закрытие свободного места при клике вне его - улучшенная версия
+// Закрытие свободного места при клике вне его
 document.addEventListener('click', function(event) {
     if (activeFreeSpace) {
         const expandedRow = activeFreeSpace.nextElementSibling;
@@ -483,18 +585,8 @@ document.addEventListener('click', function(event) {
         const isClickInsideExpanded = expandedRow && expandedRow.contains(event.target);
         
         if (!isClickInsideFreeSpace && !isClickInsideExpanded) {
+            console.log('Клик вне области, закрываем');
             closeActiveFreeSpace();
         }
     }
 });
-
-// Добавим также отладочный вывод при инициализации
-function init() {
-    console.log('Инициализация страницы отчета...');
-    
-    // ... остальной код инициализации ...
-    
-    // Проверяем, что элементы DOM существуют
-    console.log('tableBody:', tableBody);
-    console.log('Строки свободного места:', document.querySelectorAll('.free-space-row').length);
-}
