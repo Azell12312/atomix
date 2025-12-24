@@ -10,6 +10,31 @@
 </head>
 
 <body>
+    <!-- Показывается пока смена не начата) -->
+<div id="shiftGate" class="shift-gate no-print" style="display:none;">
+  <div class="shift-gate-card">
+    <h2>Начало смены</h2>
+    <p>Чтобы заполнить отчёт, сначала начните смену.</p>
+
+    <label class="shift-gate-label">User ID</label>
+    <input id="userIdInput" class="shift-gate-input" type="number" min="1" placeholder="например 12">
+
+    <label class="shift-gate-label">Shift ID</label>
+    <input id="shiftIdInput" class="shift-gate-input" type="number" min="1" value="1">
+
+    <label class="shift-gate-label">Section ID</label>
+    <input id="sectionIdInput" class="shift-gate-input" type="number" min="1" value="1">
+
+    <button id="startShiftBtn" class="btn btn-save">
+      <i class="fas fa-play"></i> Начать смену
+    </button>
+
+    <div id="shiftGateHint" class="shift-gate-hint"></div>
+  </div>
+</div>
+
+
+
     <!-- Левая панель -->
     <div class="left-panel">
         <div class="panel-header">
@@ -55,6 +80,7 @@
         <div class="header">
             <div class="date-section">
                 <div class="date-display" id="dateDisplay">Загрузка даты...</div>
+                <div id="shiftBadge" class="shift-badge no-print" style="display:none;"></div>
                 <button class="btn btn-save no-print" id="saveBtn">
                     <i class="fas fa-save"></i> Сохранить
                 </button>
