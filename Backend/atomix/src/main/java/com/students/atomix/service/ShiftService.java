@@ -21,46 +21,60 @@ import com.students.atomix.repository.ShiftSessionRepository;
 @Service
 public class ShiftService {
 
-    private final ShiftSessionRepository shiftSessionRepository;
-    private final ShiftRepository shiftRepository;
-    private final AppUserRepository userRepository;
-    private final SectionRepository sectionRepository;
+	private final ShiftSessionRepository shiftSessionRepository;
+	private final ShiftRepository shiftRepository;
+	private final AppUserRepository userRepository;
+	private final SectionRepository sectionRepository;
 
-    public ShiftService(
-            ShiftSessionRepository shiftSessionRepository,
-            ShiftRepository shiftRepository,
-            AppUserRepository userRepository,
-            SectionRepository sectionRepository) {
-        this.shiftSessionRepository = shiftSessionRepository;
-        this.shiftRepository = shiftRepository;
-        this.userRepository = userRepository;
-        this.sectionRepository = sectionRepository;
-    }
+	public ShiftService(ShiftSessionRepository shiftSessionRepository, ShiftRepository shiftRepository,
+			AppUserRepository userRepository, SectionRepository sectionRepository) {
+		this.shiftSessionRepository = shiftSessionRepository;
+		this.shiftRepository = shiftRepository;
+		this.userRepository = userRepository;
+		this.sectionRepository = sectionRepository;
+	}
 
-    @Transactional
-    public ShiftStartResponseDTO startShift(ShiftStartRequestDTO dto) {
+	@Transactional
+	public ShiftStartResponseDTO startShift(ShiftStartRequestDTO dto) {
 
-        Shift shift = shiftRepository.findById(dto.getShiftId())
-                .orElseThrow(() -> new RuntimeException("SHIFT_NOT_FOUND"));
+		Shift shift = shiftRepository.findById(dto.getShiftId())
+				.orElseThrow(() -> new RuntimeException("SHIFT_NOT_FOUND"));
 
-        AppUser user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
+		AppUser user = userRepository.findById(dto.getUserId())
+				.orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
 
-        Section section = sectionRepository.findById(dto.getSectionId())
-                .orElseThrow(() -> new RuntimeException("SECTION_NOT_FOUND"));
+		Section section = sectionRepository.findById(dto.getSectionId())
+				.orElseThrow(() -> new RuntimeException("SECTION_NOT_FOUND"));
 
-        ShiftSession session = new ShiftSession();
-        session.setShiftDate(LocalDate.now());
-        session.setShift(shift);
-        session.setUser(user);
-        session.setSection(section);
+		ShiftSession session = new ShiftSession();
+		session.setShiftDate(LocalDate.now());
+		session.setShift(shift);
+		session.setUser(user);
+		session.setSection(section);
 
-        session.setStatus(ShiftStatus.OPEN);
-        session.setStartedAt(LocalDateTime.now());
-        session.setClosedAt(null);
+		session.setStatus(ShiftStatus.OPEN);
+		session.setStartedAt(LocalDateTime.now());
+		session.setClosedAt(null);
 
-        session = shiftSessionRepository.save(session);
+		session = shiftSessionRepository.save(session);
 
-        return new ShiftStartResponseDTO(session.getId());
-    }
+		return new ShiftStartResponseDTO(session.getId());
+	}
+
+	@Transactional
+	public void closeShift(Long shiftSessionId) {
+
+		ShiftSession session = shiftSessionRepository.findById(shiftSessionId)
+				.orElseThrow(() -> new RuntimeException("SHIFT_SESSION_NOT_FOUND"));
+
+		if (session.getStatus() == ShiftStatus.CLOSED) {
+			return; // уже закрыта — ничего не делаем
+		}
+
+		session.setStatus(ShiftStatus.CLOSED);
+		session.setClosedAt(LocalDateTime.now());
+
+		shiftSessionRepository.save(session);
+	}
+
 }

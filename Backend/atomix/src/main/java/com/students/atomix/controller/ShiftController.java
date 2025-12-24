@@ -22,4 +22,11 @@ public class ShiftController {
     public ResponseEntity<ShiftStartResponseDTO> startShift(@RequestBody ShiftStartRequestDTO dto) {
         return ResponseEntity.ok(shiftService.startShift(dto));
     }
+    
+    @PostMapping("/close/{shiftSessionId}")
+    public ResponseEntity<?> closeShift(@PathVariable Long shiftSessionId) {
+        shiftService.closeShift(shiftSessionId);
+        return ResponseEntity.ok().build();
+    }
+
 }
