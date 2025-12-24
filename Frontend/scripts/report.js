@@ -1,24 +1,24 @@
 // ============ ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ============
-let activeFreeSpace = null;
-let nextRowNumber = 7;
-let fieldIdCounter = 100;
-let customFields = [];
-let currentDate = new Date();
-let currentZoom = 100;
+window.activeFreeSpace = null;
+window.nextRowNumber = 7;
+window.fieldIdCounter = 100;
+window.customFields = [];
+window.currentDate = new Date();
+window.currentZoom = 100;
 
 // ============ DOM ЭЛЕМЕНТЫ ============
-let dateDisplay;
-let saveBtn;
-let endShiftBtn;
-let reportTitle;
-let zoomOutBtn;
-let zoomInBtn;
-let zoomLevel;
-let printBtn;
-let reportContent;
-let statusMessage;
-let tableBody;
-let currentUser;
+window.dateDisplay = null;
+window.saveBtn = null;
+window.endShiftBtn = null;
+window.reportTitle = null;
+window.zoomOutBtn = null;
+window.zoomInBtn = null;
+window.zoomLevel = null;
+window.printBtn = null;
+window.reportContent = null;
+window.statusMessage = null;
+window.tableBody = null;
+window.currentUser = null;
 
 // ============ ОСНОВНЫЕ ФУНКЦИИ ============
 
@@ -26,84 +26,61 @@ let currentUser;
 function initDOM() {
     console.log('Инициализация DOM элементов...');
     
-    dateDisplay = document.getElementById('dateDisplay');
-    saveBtn = document.getElementById('saveBtn');
-    endShiftBtn = document.getElementById('endShiftBtn');
-    reportTitle = document.getElementById('reportTitle');
-    zoomOutBtn = document.getElementById('zoomOutBtn');
-    zoomInBtn = document.getElementById('zoomInBtn');
-    zoomLevel = document.getElementById('zoomLevel');
-    printBtn = document.getElementById('printBtn');
-    reportContent = document.getElementById('reportContent');
-    statusMessage = document.getElementById('statusMessage');
-    tableBody = document.getElementById('tableBody');
-    currentUser = document.getElementById('currentUser');
+    window.dateDisplay = document.getElementById('dateDisplay');
+    window.saveBtn = document.getElementById('saveBtn');
+    window.endShiftBtn = document.getElementById('endShiftBtn');
+    window.reportTitle = document.getElementById('reportTitle');
+    window.zoomOutBtn = document.getElementById('zoomOutBtn');
+    window.zoomInBtn = document.getElementById('zoomInBtn');
+    window.zoomLevel = document.getElementById('zoomLevel');
+    window.printBtn = document.getElementById('printBtn');
+    window.reportContent = document.getElementById('reportContent');
+    window.statusMessage = document.getElementById('statusMessage');
+    window.tableBody = document.getElementById('tableBody');
+    window.currentUser = document.getElementById('currentUser');
+    
+    // Гарантируем, что массивы инициализированы
+    if (!window.customFields) {
+        window.customFields = [];
+    }
+    if (typeof window.nextRowNumber === 'undefined') {
+        window.nextRowNumber = 7;
+    }
+    if (typeof window.fieldIdCounter === 'undefined') {
+        window.fieldIdCounter = 100;
+    }
+    if (!window.activeFreeSpace) {
+        window.activeFreeSpace = null;
+    }
     
     console.log('Проверка элементов:');
-    console.log('- dateDisplay:', dateDisplay);
-    console.log('- tableBody:', tableBody);
-    console.log('- currentUser:', currentUser);
-    console.log('- fieldIdCounter:', fieldIdCounter);
-    console.log('- nextRowNumber:', nextRowNumber);
-}
-
-// Функция для переключения свободного места
-function toggleFreeSpace(element) {
-    console.log('toggleFreeSpace вызван для элемента:', element);
-    
-    const row = element.closest('tr');
-    console.log('Найдена строка:', row);
-    
-    // Если уже активно другое свободное место - закрываем его
-    if (activeFreeSpace && activeFreeSpace !== row) {
-        console.log('Закрываем предыдущее активное место');
-        closeActiveFreeSpace();
-    }
-    
-    // Если текущее место уже активно - закрываем
-    if (row.classList.contains('active')) {
-        console.log('Закрываем текущее активное место');
-        closeActiveFreeSpace();
-        return;
-    }
-    
-    // Активируем текущее место
-    console.log('Активируем строку');
-    row.classList.add('active');
-    activeFreeSpace = row;
-    
-    // Создаем расширенное содержимое
-    const expandedRow = document.createElement('tr');
-    expandedRow.className = 'expanded-row';
-    expandedRow.innerHTML = `
-        <td colspan="2">
-            <div class="expanded-content">
-                <select class="dropdown-menu" onchange="handleMenuChange(this)">
-                    <option value="">------------------</option>
-                    <option value="manual">Ввести вручную</option>
-                </select>
-                <div id="customFieldContainer"></div>
-            </div>
-        </td>
-    `;
-    
-    // Вставляем расширенное содержимое после текущей строки
-    row.parentNode.insertBefore(expandedRow, row.nextSibling);
-    
-    console.log('Расширенное содержимое добавлено');
-    
-    // Автоматически фокусируемся на выпадающем меню
-    setTimeout(() => {
-        const dropdown = expandedRow.querySelector('.dropdown-menu');
-        if (dropdown) dropdown.focus();
-    }, 100);
+    console.log('- customFields:', window.customFields);
+    console.log('- customFields тип:', typeof window.customFields);
+    console.log('- nextRowNumber:', window.nextRowNumber);
+    console.log('- fieldIdCounter:', window.fieldIdCounter);
+    console.log('- tableBody:', window.tableBody);
 }
 
 // Функция для добавления пользовательского поля
 function addCustomField(buttonElement) {
     console.log('addCustomField вызван');
+    console.log('Текущий customFields:', window.customFields);
     console.log('Текущий fieldIdCounter:', window.fieldIdCounter);
     console.log('Текущий nextRowNumber:', window.nextRowNumber);
+    
+    // Гарантируем, что массивы инициализированы
+    if (!window.customFields) {
+        console.warn('customFields не инициализирован, инициализирую...');
+        window.customFields = [];
+    }
+    if (typeof window.nextRowNumber === 'undefined') {
+        console.warn('nextRowNumber не инициализирован, устанавливаю 7');
+        window.nextRowNumber = 7;
+    }
+    if (typeof window.fieldIdCounter === 'undefined') {
+        console.warn('fieldIdCounter не инициализирован, устанавливаю 100');
+        window.fieldIdCounter = 100;
+    }
     
     const container = buttonElement.closest('#customFieldContainer');
     if (!container) {
@@ -175,17 +152,33 @@ function addCustomField(buttonElement) {
         </td>
     `;
     
-    // Добавляем информацию о поле в массив
-    window.customFields.push({
-        id: fieldId,
-        name: fieldName,
-        unit: unit,
-        rowNumber: window.nextRowNumber,
-        building: getCurrentBuilding(freeSpaceRow)
-    });
-    
-    console.log('Добавлено поле:', fieldName, 'с ID:', fieldId);
-    console.log('Всего customFields:', window.customFields.length);
+    // Добавляем информацию о поле в массив с проверкой
+    try {
+        console.log('Добавляем поле в массив customFields...');
+        console.log('customFields до добавления:', window.customFields);
+        
+        // Гарантируем, что customFields является массивом
+        if (!Array.isArray(window.customFields)) {
+            console.warn('customFields не массив, преобразую...');
+            window.customFields = [];
+        }
+        
+        window.customFields.push({
+            id: fieldId,
+            name: fieldName,
+            unit: unit,
+            rowNumber: window.nextRowNumber,
+            building: getCurrentBuilding(freeSpaceRow)
+        });
+        
+        console.log('Добавлено поле:', fieldName, 'с ID:', fieldId);
+        console.log('Всего customFields после добавления:', window.customFields.length);
+        console.log('customFields:', window.customFields);
+    } catch (error) {
+        console.error('Ошибка при добавлении поля в массив:', error);
+        alert('Произошла ошибка при добавлении поля. Пожалуйста, попробуйте еще раз.');
+        return;
+    }
     
     // Увеличиваем номер следующей строки
     window.nextRowNumber++;
@@ -218,113 +211,6 @@ function addCustomField(buttonElement) {
     setTimeout(saveDate, 500);
 }
 
-// Функция для закрытия активного свободного места
-function closeActiveFreeSpace() {
-    if (window.activeFreeSpace) {
-        console.log('Закрываем активное свободное место');
-        window.activeFreeSpace.classList.remove('active');
-        const expandedRow = window.activeFreeSpace.nextElementSibling;
-        if (expandedRow && expandedRow.classList.contains('expanded-row')) {
-            expandedRow.remove();
-            console.log('Расширенная строка удалена');
-        }
-        window.activeFreeSpace = null;
-        
-        // Очищаем контейнер
-        const container = document.getElementById('customFieldContainer');
-        if (container) container.innerHTML = '';
-    }
-}
-
-// Обработчик изменения выпадающего меню
-function handleMenuChange(selectElement) {
-    console.log('handleMenuChange вызван, выбрано значение:', selectElement.value);
-    
-    const container = document.getElementById('customFieldContainer');
-    if (!container) {
-        console.error('Контейнер customFieldContainer не найден');
-        return;
-    }
-    
-    if (selectElement.value === 'manual') {
-        container.innerHTML = `
-            <div style="margin-bottom: 15px;">
-                <input type="text" class="custom-field-input field-name-input" 
-                       placeholder="Введите название нового поля"
-                       onkeydown="handleCustomFieldKeydown(event, this)"
-                       style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-                
-                <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
-                    <span style="color: #666; font-size: 0.9em; white-space: nowrap;">Единица измерения:</span>
-                    <select class="unit-select" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-                        <option value="">Выберите единицу</option>
-                        <option value="кг">кг</option>
-                        <option value="м³">м³</option>
-                        <option value="шт">шт</option>
-                        <option value="л">л</option>
-                        <option value="т">т</option>
-                        <option value="г">г</option>
-                        <option value="ед">ед</option>
-                        <option value="пак">пак</option>
-                        <option value="бут">бут</option>
-                        <option value="custom">Другая...</option>
-                    </select>
-                </div>
-                
-                <div id="customUnitContainer" style="margin-top: 10px; display: none;">
-                    <input type="text" class="custom-unit-input" 
-                           placeholder="Введите свою единицу измерения"
-                           style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-                </div>
-            </div>
-            <button class="btn add-field-btn" onclick="addCustomField(this)" style="margin-top: 10px; width: 100%; padding: 10px; background-color: #1e3a5f; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                <i class="fas fa-plus"></i> Добавить поле
-            </button>
-        `;
-        
-        // Добавляем обработчик для выбора "Другая..."
-        const unitSelect = container.querySelector('.unit-select');
-        if (unitSelect) {
-            unitSelect.addEventListener('change', function() {
-                const customUnitContainer = document.getElementById('customUnitContainer');
-                if (this.value === 'custom') {
-                    customUnitContainer.style.display = 'block';
-                    const customInput = customUnitContainer.querySelector('.custom-unit-input');
-                    if (customInput) customInput.focus();
-                } else {
-                    customUnitContainer.style.display = 'none';
-                }
-            });
-        }
-        
-        // Автоматически фокусируемся на поле ввода названия
-        setTimeout(() => {
-            const nameInput = container.querySelector('.field-name-input');
-            if (nameInput) {
-                nameInput.focus();
-                console.log('Фокус установлен на поле ввода названия');
-            }
-        }, 100);
-    } else {
-        container.innerHTML = '';
-    }
-}
-
-// Обработчик нажатия клавиши Enter в поле ввода
-function handleCustomFieldKeydown(event, inputElement) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        const container = inputElement.closest('#customFieldContainer');
-        if (container) {
-            const addButton = container.querySelector('.add-field-btn');
-            if (addButton) {
-                console.log('Enter нажат, вызываем addCustomField');
-                addCustomField(addButton);
-            }
-        }
-    }
-}
-
 // Функция для определения текущего здания
 function getCurrentBuilding(freeSpaceRow) {
     // Ищем ближайшее здание выше свободного места
@@ -350,353 +236,20 @@ function showStatusMessage(message, type) {
                 window.statusMessage.style.display = 'none';
             }
         }, 3000);
+    } else {
+        // Если элемент не найден, показываем alert
+        alert(message);
     }
-}
-
-// ============ ВАШ СТАРЫЙ КОД (с небольшими модификациями) ============
-
-// Форматирование даты
-function formatDate(date) {
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    return date.toLocaleDateString('ru-RU', options);
-}
-
-// Форматирование даты для ключа в localStorage
-function formatDateKey(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
-// Обновление отображения даты
-function updateDateDisplay() {
-    const formattedDate = formatDate(window.currentDate);
-    if (window.dateDisplay) {
-        window.dateDisplay.textContent = formattedDate;
-    }
-    if (window.reportTitle) {
-        window.reportTitle.textContent = `Рапорт за ${formattedDate}`;
-    }
-}
-
-// Получение текущей даты из системы
-function getCurrentSystemDate() {
-    return new Date();
-}
-
-// Сохранение отчета
-function saveDate() {
-    updateDateDisplay();
-
-    // Сбор данных отчета
-    const reportData = collectReportData();
-    const dateKey = formatDateKey(window.currentDate);
-    
-    // Добавляем информацию о пользовательских полях
-    reportData.customFields = window.customFields;
-    
-    localStorage.setItem(`report_${dateKey}`, JSON.stringify(reportData));
-
-    // Показываем сообщение об успехе
-    showStatusMessage(`Отчет за ${formatDate(window.currentDate)} сохранен!`, 'success-message');
-
-    console.log('Отчет сохранен:', reportData);
-}
-
-// Сбор данных отчета
-function collectReportData() {
-    const reportData = {
-        date: formatDateKey(window.currentDate),
-        building1: {
-            item1: { 
-                shift: document.getElementById('data1-1')?.value || ''
-            },
-            item2: { 
-                shift: document.getElementById('data2-1')?.value || ''
-            }
-        },
-        building2: {
-            item3: { 
-                shift: document.getElementById('data3-1')?.value || ''
-            },
-            item4: { 
-                shift: document.getElementById('data4-1')?.value || ''
-            },
-            item5: { 
-                shift: document.getElementById('data5-1')?.value || ''
-            }
-        },
-        building3: {
-            item6: { 
-                shift: document.getElementById('data6-1')?.value || ''
-            }
-        },
-        timestamp: new Date().toISOString(),
-        operator: window.currentUser ? window.currentUser.textContent : ''
-    };
-
-    // Добавляем данные из пользовательских полей
-    window.customFields.forEach(field => {
-        if (!reportData.customFieldsData) {
-            reportData.customFieldsData = {};
-        }
-        reportData.customFieldsData[field.id] = {
-            name: field.name,
-            unit: field.unit,
-            shift: document.getElementById(`${field.id}_shift`)?.value || '',
-            building: field.building
-        };
-    });
-
-    return reportData;
-}
-
-// Завершение смены
-function endShift() {
-    if (confirm('Вы уверены, что хотите завершить смену? После завершения редактирование будет невозможно.')) {
-        // Сохраняем отчет перед завершением
-        saveDate();
-
-        showStatusMessage('Смена завершена успешно! Отчет отправлен в архив.', 'success-message');
-
-        // Блокируем элементы редактирования
-        document.querySelectorAll('.data-input').forEach(input => {
-            input.disabled = true;
-        });
-        
-        // Блокируем возможность добавления новых полей
-        document.querySelectorAll('.free-space-row').forEach(row => {
-            row.style.pointerEvents = 'none';
-            row.style.opacity = '0.5';
-        });
-        
-        if (window.saveBtn) window.saveBtn.disabled = true;
-        if (window.endShiftBtn) window.endShiftBtn.disabled = true;
-
-        console.log('Смена завершена');
-    }
-}
-
-function updateZoom() {
-    if (window.zoomLevel) {
-        window.zoomLevel.textContent = `${window.currentZoom}%`;
-    }
-    if (window.reportContent) {
-        window.reportContent.style.transform = `scale(${window.currentZoom / 100})`;
-        window.reportContent.style.transformOrigin = 'top left';
-    }
-}
-
-function zoomIn() {
-    if (window.currentZoom < 150) {
-        window.currentZoom += 10;
-        updateZoom();
-    }
-}
-
-function zoomOut() {
-    if (window.currentZoom > 50) {
-        window.currentZoom -= 10;
-        updateZoom();
-    }
-}
-
-// Печать
-function printReport() {
-    window.print();
-}
-
-// Загрузка сохраненного отчета
-function loadSavedReport() {
-    const dateKey = formatDateKey(window.currentDate);
-    const savedReport = localStorage.getItem(`report_${dateKey}`);
-
-    if (savedReport) {
-        try {
-            const reportData = JSON.parse(savedReport);
-            
-            // Загружаем данные только если они существуют в сохраненном отчете
-            if (reportData.building1) {
-                if (reportData.building1.item1) {
-                    const elem = document.getElementById('data1-1');
-                    if (elem) elem.value = reportData.building1.item1.shift || '';
-                }
-                if (reportData.building1.item2) {
-                    const elem = document.getElementById('data2-1');
-                    if (elem) elem.value = reportData.building1.item2.shift || '';
-                }
-            }
-            
-            if (reportData.building2) {
-                if (reportData.building2.item3) {
-                    const elem = document.getElementById('data3-1');
-                    if (elem) elem.value = reportData.building2.item3.shift || '';
-                }
-                if (reportData.building2.item4) {
-                    const elem = document.getElementById('data4-1');
-                    if (elem) elem.value = reportData.building2.item4.shift || '';
-                }
-                if (reportData.building2.item5) {
-                    const elem = document.getElementById('data5-1');
-                    if (elem) elem.value = reportData.building2.item5.shift || '';
-                }
-            }
-            
-            if (reportData.building3 && reportData.building3.item6) {
-                const elem = document.getElementById('data6-1');
-                if (elem) elem.value = reportData.building3.item6.shift || '';
-            }
-            
-            // Загружаем пользовательские поля
-            if (reportData.customFields) {
-                window.customFields = reportData.customFields;
-                window.nextRowNumber = 7; // Сбрасываем
-                window.fieldIdCounter = 100; // Сбрасываем
-                
-                // Находим максимальные значения
-                reportData.customFields.forEach(field => {
-                    if (field.rowNumber >= window.nextRowNumber) {
-                        window.nextRowNumber = field.rowNumber + 1;
-                    }
-                    const idNum = parseInt(field.id.replace('custom_', ''));
-                    if (!isNaN(idNum) && idNum >= window.fieldIdCounter) {
-                        window.fieldIdCounter = idNum + 1;
-                    }
-                });
-                
-                console.log('Загружены пользовательские поля:', window.customFields.length);
-                console.log('Установлен nextRowNumber:', window.nextRowNumber);
-                console.log('Установлен fieldIdCounter:', window.fieldIdCounter);
-                
-                if (reportData.customFieldsData) {
-                    // Восстанавливаем пользовательские поля
-                    Object.keys(reportData.customFieldsData).forEach(fieldId => {
-                        const fieldData = reportData.customFieldsData[fieldId];
-                        const fieldInfo = window.customFields.find(f => f.id === fieldId);
-                        
-                        if (fieldInfo) {
-                            // Находим место для вставки (после соответствующего здания)
-                            insertCustomField(fieldInfo, fieldData.shift);
-                        }
-                    });
-                    
-                    // Обновляем нумерацию
-                    updateRowNumbers();
-                }
-            }
-            
-            console.log('Отчет загружен:', dateKey);
-        } catch (e) {
-            console.error('Ошибка загрузки отчета:', e);
-        }
-    }
-}
-
-// Вставка пользовательского поля при загрузке
-function insertCustomField(fieldInfo, shiftValue) {
-    if (!window.tableBody) return;
-    
-    // Находим соответствующее здание
-    const buildingHeaders = window.tableBody.querySelectorAll('.building-header');
-    let targetBuildingRow = null;
-    
-    for (let header of buildingHeaders) {
-        if (header.querySelector('td').textContent.trim() === fieldInfo.building) {
-            targetBuildingRow = header;
-            break;
-        }
-    }
-    
-    if (targetBuildingRow) {
-        // Находим следующую свободную строку после этого здания
-        let currentRow = targetBuildingRow;
-        let freeSpaceRow = null;
-        
-        while (currentRow.nextElementSibling) {
-            currentRow = currentRow.nextElementSibling;
-            if (currentRow.classList.contains('free-space-row')) {
-                freeSpaceRow = currentRow;
-                break;
-            }
-        }
-        
-        if (freeSpaceRow) {
-            // Создаем новую строку с полем
-            const newRow = document.createElement('tr');
-            newRow.dataset.fieldId = fieldInfo.id;
-            newRow.dataset.isCustom = 'true';
-            newRow.innerHTML = `
-                <td>
-                    <span class="row-number">${fieldInfo.rowNumber}</span>
-                    ${fieldInfo.name}
-                    ${fieldInfo.unit ? `<div class="sub-description">${fieldInfo.unit}</div>` : ''}
-                </td>
-                <td>
-                    <div style="display: flex; gap: 5px; justify-content: center;">
-                        <input type="text" class="data-input" id="${fieldInfo.id}_shift" value="${shiftValue || ''}">
-                    </div>
-                </td>
-            `;
-            
-            // Вставляем новую строку перед блоком свободного места
-            window.tableBody.insertBefore(newRow, freeSpaceRow);
-        }
-    }
-}
-
-// Обновление нумерации строк
-function updateRowNumbers() {
-    if (!window.tableBody) return;
-    
-    let rowNumber = 1;
-    const rows = window.tableBody.querySelectorAll('tr:not(.building-header):not(.separator):not(.free-space-row):not(.expanded-row)');
-    
-    rows.forEach(row => {
-        const rowNumberElement = row.querySelector('.row-number');
-        if (rowNumberElement) {
-            rowNumberElement.textContent = rowNumber;
-            
-            // Обновляем ID если это пользовательское поле
-            if (row.dataset.isCustom && row.dataset.fieldId) {
-                const field = window.customFields.find(f => f.id === row.dataset.fieldId);
-                if (field) {
-                    field.rowNumber = rowNumber;
-                }
-            }
-            
-            rowNumber++;
-        }
-    });
-    
-    window.nextRowNumber = rowNumber;
-}
-
-// Выход из системы
-function logout() {
-    if (confirm('Вы уверены, что хотите выйти?')) {
-        localStorage.removeItem('user');
-        localStorage.removeItem('role');
-        window.location.href = 'index.html';
-    }
-}
-
-// Навигация
-function showMainPage() {
-    alert('Вы находитесь на главной странице');
-}
-
-function showReports() {
-    alert('Раздел "Рапорты" находится в разработке');
-}
-
-function showDocuments() {
-    alert('Раздел "Отчеты" находится в разработке');
 }
 
 // Основная функция инициализации
 function init() {
     console.log('Запуск функции init()...');
+    console.log('Проверка глобальных переменных перед init:');
+    console.log('- customFields:', window.customFields);
+    console.log('- customFields тип:', typeof window.customFields);
+    console.log('- nextRowNumber:', window.nextRowNumber);
+    console.log('- fieldIdCounter:', window.fieldIdCounter);
     
     // Инициализируем DOM элементы
     initDOM();
@@ -795,793 +348,42 @@ function init() {
     updateRowNumbers();
     
     console.log('Инициализация завершена');
+    console.log('Финальные значения:');
+    console.log('- customFields:', window.customFields);
+    console.log('- nextRowNumber:', window.nextRowNumber);
+    console.log('- fieldIdCounter:', window.fieldIdCounter);
 }
 
 // Запуск при загрузке страницы
 window.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM загружен, запускаем инициализацию...');
-    init();
-})
-
-// ============ ОСНОВНЫЕ ФУНКЦИИ ============
-
-// Функция для инициализации DOM элементов
-function initDOM() {
-    console.log('Инициализация DOM элементов...');
+    console.log('=== DOM загружен, запускаем инициализацию ===');
     
-    dateDisplay = document.getElementById('dateDisplay');
-    saveBtn = document.getElementById('saveBtn');
-    endShiftBtn = document.getElementById('endShiftBtn');
-    reportTitle = document.getElementById('reportTitle');
-    zoomOutBtn = document.getElementById('zoomOutBtn');
-    zoomInBtn = document.getElementById('zoomInBtn');
-    zoomLevel = document.getElementById('zoomLevel');
-    printBtn = document.getElementById('printBtn');
-    reportContent = document.getElementById('reportContent');
-    statusMessage = document.getElementById('statusMessage');
-    tableBody = document.getElementById('tableBody');
-    currentUser = document.getElementById('currentUser');
-    
-    console.log('Проверка элементов:');
-    console.log('- dateDisplay:', dateDisplay);
-    console.log('- tableBody:', tableBody);
-    console.log('- currentUser:', currentUser);
-    console.log('- fieldIdCounter:', fieldIdCounter);
-    console.log('- nextRowNumber:', nextRowNumber);
-}
-
-// Функция для переключения свободного места
-function toggleFreeSpace(element) {
-    console.log('toggleFreeSpace вызван для элемента:', element);
-    
-    const row = element.closest('tr');
-    console.log('Найдена строка:', row);
-    
-    // Если уже активно другое свободное место - закрываем его
-    if (activeFreeSpace && activeFreeSpace !== row) {
-        console.log('Закрываем предыдущее активное место');
-        closeActiveFreeSpace();
+    // Инициализируем глобальные переменные с гарантией
+    if (typeof window.customFields === 'undefined') {
+        window.customFields = [];
     }
-    
-    // Если текущее место уже активно - закрываем
-    if (row.classList.contains('active')) {
-        console.log('Закрываем текущее активное место');
-        closeActiveFreeSpace();
-        return;
+    if (typeof window.nextRowNumber === 'undefined') {
+        window.nextRowNumber = 7;
     }
-    
-    // Активируем текущее место
-    console.log('Активируем строку');
-    row.classList.add('active');
-    activeFreeSpace = row;
-    
-    // Создаем расширенное содержимое
-    const expandedRow = document.createElement('tr');
-    expandedRow.className = 'expanded-row';
-    expandedRow.innerHTML = `
-        <td colspan="2">
-            <div class="expanded-content">
-                <select class="dropdown-menu" onchange="handleMenuChange(this)">
-                    <option value="">------------------</option>
-                    <option value="manual">Ввести вручную</option>
-                </select>
-                <div id="customFieldContainer"></div>
-            </div>
-        </td>
-    `;
-    
-    // Вставляем расширенное содержимое после текущей строки
-    row.parentNode.insertBefore(expandedRow, row.nextSibling);
-    
-    console.log('Расширенное содержимое добавлено');
-    
-    // Автоматически фокусируемся на выпадающем меню
-    setTimeout(() => {
-        const dropdown = expandedRow.querySelector('.dropdown-menu');
-        if (dropdown) dropdown.focus();
-    }, 100);
-}
-
-// Функция для добавления пользовательского поля
-function addCustomField(buttonElement) {
-    console.log('addCustomField вызван');
-    console.log('Текущий fieldIdCounter:', window.fieldIdCounter);
-    console.log('Текущий nextRowNumber:', window.nextRowNumber);
-    
-    const container = buttonElement.closest('#customFieldContainer');
-    if (!container) {
-        console.error('Контейнер customFieldContainer не найден');
-        return;
+    if (typeof window.fieldIdCounter === 'undefined') {
+        window.fieldIdCounter = 100;
     }
-    
-    const nameInput = container.querySelector('.field-name-input');
-    const unitSelect = container.querySelector('.unit-select');
-    const customUnitInput = container.querySelector('.custom-unit-input');
-    
-    if (!nameInput) {
-        console.error('Поле ввода названия не найдено');
-        return;
-    }
-    
-    const fieldName = nameInput.value.trim();
-    let unit = '';
-    
-    if (unitSelect) {
-        if (unitSelect.value === 'custom' && customUnitInput) {
-            unit = customUnitInput.value.trim();
-        } else if (unitSelect.value) {
-            unit = unitSelect.value;
-        }
-    }
-    
-    console.log('Название поля:', fieldName);
-    console.log('Единица измерения:', unit);
-    
-    if (!fieldName) {
-        alert('Пожалуйста, введите название поля');
-        nameInput.focus();
-        return;
-    }
-    
-    // Используем глобальные переменные
-    const fieldId = `custom_${window.fieldIdCounter}`;
-    console.log('Создаем поле с ID:', fieldId);
-    window.fieldIdCounter++;
-    
-    // Находим текущий блок свободного места
-    const expandedRow = container.closest('.expanded-row');
-    if (!expandedRow) {
-        console.error('Расширенная строка не найдена');
-        return;
-    }
-    
-    const freeSpaceRow = expandedRow.previousElementSibling;
-    if (!freeSpaceRow || !freeSpaceRow.classList.contains('free-space-row')) {
-        console.error('Строка свободного места не найдена');
-        return;
-    }
-    
-    // Создаем новую строку с полем
-    const newRow = document.createElement('tr');
-    newRow.dataset.fieldId = fieldId;
-    newRow.dataset.isCustom = 'true';
-    newRow.innerHTML = `
-        <td>
-            <span class="row-number">${window.nextRowNumber}</span>
-            ${fieldName}
-            ${unit ? `<div class="sub-description">${unit}</div>` : ''}
-        </td>
-        <td>
-            <div style="display: flex; gap: 5px; justify-content: center;">
-                <input type="text" class="data-input" id="${fieldId}_shift">
-            </div>
-        </td>
-    `;
-    
-    // Добавляем информацию о поле в массив
-    window.customFields.push({
-        id: fieldId,
-        name: fieldName,
-        unit: unit,
-        rowNumber: window.nextRowNumber,
-        building: getCurrentBuilding(freeSpaceRow)
-    });
-    
-    console.log('Добавлено поле:', fieldName, 'с ID:', fieldId);
-    console.log('Всего customFields:', window.customFields.length);
-    
-    // Увеличиваем номер следующей строки
-    window.nextRowNumber++;
-    console.log('Следующий nextRowNumber:', window.nextRowNumber);
-    
-    // Вставляем новую строку перед блоком свободного места
-    if (window.tableBody) {
-        window.tableBody.insertBefore(newRow, freeSpaceRow);
-        console.log('Строка добавлена в таблицу');
-    } else {
-        console.error('tableBody не найден');
-    }
-    
-    // Закрываем расширенное содержимое
-    closeActiveFreeSpace();
-    
-    // Показываем сообщение об успешном добавлении
-    showStatusMessage(`Поле "${fieldName}" успешно добавлено`, 'success');
-    
-    // Фокусируемся на новом поле ввода
-    setTimeout(() => {
-        const newInput = document.getElementById(`${fieldId}_shift`);
-        if (newInput) {
-            newInput.focus();
-            console.log('Фокус установлен на новое поле ввода');
-        }
-    }, 100);
-    
-    // Автоматически сохраняем после добавления поля
-    setTimeout(saveDate, 500);
-}
-
-// Функция для закрытия активного свободного места
-function closeActiveFreeSpace() {
-    if (window.activeFreeSpace) {
-        console.log('Закрываем активное свободное место');
-        window.activeFreeSpace.classList.remove('active');
-        const expandedRow = window.activeFreeSpace.nextElementSibling;
-        if (expandedRow && expandedRow.classList.contains('expanded-row')) {
-            expandedRow.remove();
-            console.log('Расширенная строка удалена');
-        }
+    if (typeof window.activeFreeSpace === 'undefined') {
         window.activeFreeSpace = null;
-        
-        // Очищаем контейнер
-        const container = document.getElementById('customFieldContainer');
-        if (container) container.innerHTML = '';
     }
-}
-
-// Обработчик изменения выпадающего меню
-function handleMenuChange(selectElement) {
-    console.log('handleMenuChange вызван, выбрано значение:', selectElement.value);
-    
-    const container = document.getElementById('customFieldContainer');
-    if (!container) {
-        console.error('Контейнер customFieldContainer не найден');
-        return;
+    if (typeof window.currentDate === 'undefined') {
+        window.currentDate = new Date();
+    }
+    if (typeof window.currentZoom === 'undefined') {
+        window.currentZoom = 100;
     }
     
-    if (selectElement.value === 'manual') {
-        container.innerHTML = `
-            <div style="margin-bottom: 15px;">
-                <input type="text" class="custom-field-input field-name-input" 
-                       placeholder="Введите название нового поля"
-                       onkeydown="handleCustomFieldKeydown(event, this)"
-                       style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-                
-                <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
-                    <span style="color: #666; font-size: 0.9em; white-space: nowrap;">Единица измерения:</span>
-                    <select class="unit-select" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-                        <option value="">Выберите единицу</option>
-                        <option value="кг">кг</option>
-                        <option value="м³">м³</option>
-                        <option value="шт">шт</option>
-                        <option value="л">л</option>
-                        <option value="т">т</option>
-                        <option value="г">г</option>
-                        <option value="ед">ед</option>
-                        <option value="пак">пак</option>
-                        <option value="бут">бут</option>
-                        <option value="custom">Другая...</option>
-                    </select>
-                </div>
-                
-                <div id="customUnitContainer" style="margin-top: 10px; display: none;">
-                    <input type="text" class="custom-unit-input" 
-                           placeholder="Введите свою единицу измерения"
-                           style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-                </div>
-            </div>
-            <button class="btn add-field-btn" onclick="addCustomField(this)" style="margin-top: 10px; width: 100%; padding: 10px; background-color: #1e3a5f; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                <i class="fas fa-plus"></i> Добавить поле
-            </button>
-        `;
-        
-        // Добавляем обработчик для выбора "Другая..."
-        const unitSelect = container.querySelector('.unit-select');
-        if (unitSelect) {
-            unitSelect.addEventListener('change', function() {
-                const customUnitContainer = document.getElementById('customUnitContainer');
-                if (this.value === 'custom') {
-                    customUnitContainer.style.display = 'block';
-                    const customInput = customUnitContainer.querySelector('.custom-unit-input');
-                    if (customInput) customInput.focus();
-                } else {
-                    customUnitContainer.style.display = 'none';
-                }
-            });
-        }
-        
-        // Автоматически фокусируемся на поле ввода названия
-        setTimeout(() => {
-            const nameInput = container.querySelector('.field-name-input');
-            if (nameInput) {
-                nameInput.focus();
-                console.log('Фокус установлен на поле ввода названия');
-            }
-        }, 100);
-    } else {
-        container.innerHTML = '';
-    }
-}
-
-// Обработчик нажатия клавиши Enter в поле ввода
-function handleCustomFieldKeydown(event, inputElement) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        const container = inputElement.closest('#customFieldContainer');
-        if (container) {
-            const addButton = container.querySelector('.add-field-btn');
-            if (addButton) {
-                console.log('Enter нажат, вызываем addCustomField');
-                addCustomField(addButton);
-            }
-        }
-    }
-}
-
-// Функция для определения текущего здания
-function getCurrentBuilding(freeSpaceRow) {
-    // Ищем ближайшее здание выше свободного места
-    let currentRow = freeSpaceRow.previousElementSibling;
-    while (currentRow) {
-        if (currentRow.classList.contains('building-header')) {
-            return currentRow.querySelector('td').textContent.trim();
-        }
-        currentRow = currentRow.previousElementSibling;
-    }
-    return 'Без категории';
-}
-
-// Функция для показа статусных сообщений
-function showStatusMessage(message, type) {
-    if (window.statusMessage) {
-        window.statusMessage.textContent = message;
-        window.statusMessage.className = `status-message ${type}`;
-        window.statusMessage.style.display = 'block';
-        
-        setTimeout(() => {
-            if (window.statusMessage) {
-                window.statusMessage.style.display = 'none';
-            }
-        }, 3000);
-    }
-}
-
-// ============ ВАШ СТАРЫЙ КОД (с небольшими модификациями) ============
-
-// Форматирование даты
-function formatDate(date) {
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    return date.toLocaleDateString('ru-RU', options);
-}
-
-// Форматирование даты для ключа в localStorage
-function formatDateKey(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
-// Обновление отображения даты
-function updateDateDisplay() {
-    const formattedDate = formatDate(window.currentDate);
-    if (window.dateDisplay) {
-        window.dateDisplay.textContent = formattedDate;
-    }
-    if (window.reportTitle) {
-        window.reportTitle.textContent = `Рапорт за ${formattedDate}`;
-    }
-}
-
-// Получение текущей даты из системы
-function getCurrentSystemDate() {
-    return new Date();
-}
-
-// Сохранение отчета
-function saveDate() {
-    updateDateDisplay();
-
-    // Сбор данных отчета
-    const reportData = collectReportData();
-    const dateKey = formatDateKey(window.currentDate);
+    console.log('Глобальные переменные после инициализации:');
+    console.log('- customFields:', window.customFields);
+    console.log('- nextRowNumber:', window.nextRowNumber);
+    console.log('- fieldIdCounter:', window.fieldIdCounter);
     
-    // Добавляем информацию о пользовательских полях
-    reportData.customFields = window.customFields;
-    
-    localStorage.setItem(`report_${dateKey}`, JSON.stringify(reportData));
-
-    // Показываем сообщение об успехе
-    showStatusMessage(`Отчет за ${formatDate(window.currentDate)} сохранен!`, 'success-message');
-
-    console.log('Отчет сохранен:', reportData);
-}
-
-// Сбор данных отчета
-function collectReportData() {
-    const reportData = {
-        date: formatDateKey(window.currentDate),
-        building1: {
-            item1: { 
-                shift: document.getElementById('data1-1')?.value || ''
-            },
-            item2: { 
-                shift: document.getElementById('data2-1')?.value || ''
-            }
-        },
-        building2: {
-            item3: { 
-                shift: document.getElementById('data3-1')?.value || ''
-            },
-            item4: { 
-                shift: document.getElementById('data4-1')?.value || ''
-            },
-            item5: { 
-                shift: document.getElementById('data5-1')?.value || ''
-            }
-        },
-        building3: {
-            item6: { 
-                shift: document.getElementById('data6-1')?.value || ''
-            }
-        },
-        timestamp: new Date().toISOString(),
-        operator: window.currentUser ? window.currentUser.textContent : ''
-    };
-
-    // Добавляем данные из пользовательских полей
-    window.customFields.forEach(field => {
-        if (!reportData.customFieldsData) {
-            reportData.customFieldsData = {};
-        }
-        reportData.customFieldsData[field.id] = {
-            name: field.name,
-            unit: field.unit,
-            shift: document.getElementById(`${field.id}_shift`)?.value || '',
-            building: field.building
-        };
-    });
-
-    return reportData;
-}
-
-// Завершение смены
-function endShift() {
-    if (confirm('Вы уверены, что хотите завершить смену? После завершения редактирование будет невозможно.')) {
-        // Сохраняем отчет перед завершением
-        saveDate();
-
-        showStatusMessage('Смена завершена успешно! Отчет отправлен в архив.', 'success-message');
-
-        // Блокируем элементы редактирования
-        document.querySelectorAll('.data-input').forEach(input => {
-            input.disabled = true;
-        });
-        
-        // Блокируем возможность добавления новых полей
-        document.querySelectorAll('.free-space-row').forEach(row => {
-            row.style.pointerEvents = 'none';
-            row.style.opacity = '0.5';
-        });
-        
-        if (window.saveBtn) window.saveBtn.disabled = true;
-        if (window.endShiftBtn) window.endShiftBtn.disabled = true;
-
-        console.log('Смена завершена');
-    }
-}
-
-function updateZoom() {
-    if (window.zoomLevel) {
-        window.zoomLevel.textContent = `${window.currentZoom}%`;
-    }
-    if (window.reportContent) {
-        window.reportContent.style.transform = `scale(${window.currentZoom / 100})`;
-        window.reportContent.style.transformOrigin = 'top left';
-    }
-}
-
-function zoomIn() {
-    if (window.currentZoom < 150) {
-        window.currentZoom += 10;
-        updateZoom();
-    }
-}
-
-function zoomOut() {
-    if (window.currentZoom > 50) {
-        window.currentZoom -= 10;
-        updateZoom();
-    }
-}
-
-// Печать
-function printReport() {
-    window.print();
-}
-
-// Загрузка сохраненного отчета
-function loadSavedReport() {
-    const dateKey = formatDateKey(window.currentDate);
-    const savedReport = localStorage.getItem(`report_${dateKey}`);
-
-    if (savedReport) {
-        try {
-            const reportData = JSON.parse(savedReport);
-            
-            // Загружаем данные только если они существуют в сохраненном отчете
-            if (reportData.building1) {
-                if (reportData.building1.item1) {
-                    const elem = document.getElementById('data1-1');
-                    if (elem) elem.value = reportData.building1.item1.shift || '';
-                }
-                if (reportData.building1.item2) {
-                    const elem = document.getElementById('data2-1');
-                    if (elem) elem.value = reportData.building1.item2.shift || '';
-                }
-            }
-            
-            if (reportData.building2) {
-                if (reportData.building2.item3) {
-                    const elem = document.getElementById('data3-1');
-                    if (elem) elem.value = reportData.building2.item3.shift || '';
-                }
-                if (reportData.building2.item4) {
-                    const elem = document.getElementById('data4-1');
-                    if (elem) elem.value = reportData.building2.item4.shift || '';
-                }
-                if (reportData.building2.item5) {
-                    const elem = document.getElementById('data5-1');
-                    if (elem) elem.value = reportData.building2.item5.shift || '';
-                }
-            }
-            
-            if (reportData.building3 && reportData.building3.item6) {
-                const elem = document.getElementById('data6-1');
-                if (elem) elem.value = reportData.building3.item6.shift || '';
-            }
-            
-            // Загружаем пользовательские поля
-            if (reportData.customFields) {
-                window.customFields = reportData.customFields;
-                window.nextRowNumber = 7; // Сбрасываем
-                window.fieldIdCounter = 100; // Сбрасываем
-                
-                // Находим максимальные значения
-                reportData.customFields.forEach(field => {
-                    if (field.rowNumber >= window.nextRowNumber) {
-                        window.nextRowNumber = field.rowNumber + 1;
-                    }
-                    const idNum = parseInt(field.id.replace('custom_', ''));
-                    if (!isNaN(idNum) && idNum >= window.fieldIdCounter) {
-                        window.fieldIdCounter = idNum + 1;
-                    }
-                });
-                
-                console.log('Загружены пользовательские поля:', window.customFields.length);
-                console.log('Установлен nextRowNumber:', window.nextRowNumber);
-                console.log('Установлен fieldIdCounter:', window.fieldIdCounter);
-                
-                if (reportData.customFieldsData) {
-                    // Восстанавливаем пользовательские поля
-                    Object.keys(reportData.customFieldsData).forEach(fieldId => {
-                        const fieldData = reportData.customFieldsData[fieldId];
-                        const fieldInfo = window.customFields.find(f => f.id === fieldId);
-                        
-                        if (fieldInfo) {
-                            // Находим место для вставки (после соответствующего здания)
-                            insertCustomField(fieldInfo, fieldData.shift);
-                        }
-                    });
-                    
-                    // Обновляем нумерацию
-                    updateRowNumbers();
-                }
-            }
-            
-            console.log('Отчет загружен:', dateKey);
-        } catch (e) {
-            console.error('Ошибка загрузки отчета:', e);
-        }
-    }
-}
-
-// Вставка пользовательского поля при загрузке
-function insertCustomField(fieldInfo, shiftValue) {
-    if (!window.tableBody) return;
-    
-    // Находим соответствующее здание
-    const buildingHeaders = window.tableBody.querySelectorAll('.building-header');
-    let targetBuildingRow = null;
-    
-    for (let header of buildingHeaders) {
-        if (header.querySelector('td').textContent.trim() === fieldInfo.building) {
-            targetBuildingRow = header;
-            break;
-        }
-    }
-    
-    if (targetBuildingRow) {
-        // Находим следующую свободную строку после этого здания
-        let currentRow = targetBuildingRow;
-        let freeSpaceRow = null;
-        
-        while (currentRow.nextElementSibling) {
-            currentRow = currentRow.nextElementSibling;
-            if (currentRow.classList.contains('free-space-row')) {
-                freeSpaceRow = currentRow;
-                break;
-            }
-        }
-        
-        if (freeSpaceRow) {
-            // Создаем новую строку с полем
-            const newRow = document.createElement('tr');
-            newRow.dataset.fieldId = fieldInfo.id;
-            newRow.dataset.isCustom = 'true';
-            newRow.innerHTML = `
-                <td>
-                    <span class="row-number">${fieldInfo.rowNumber}</span>
-                    ${fieldInfo.name}
-                    ${fieldInfo.unit ? `<div class="sub-description">${fieldInfo.unit}</div>` : ''}
-                </td>
-                <td>
-                    <div style="display: flex; gap: 5px; justify-content: center;">
-                        <input type="text" class="data-input" id="${fieldInfo.id}_shift" value="${shiftValue || ''}">
-                    </div>
-                </td>
-            `;
-            
-            // Вставляем новую строку перед блоком свободного места
-            window.tableBody.insertBefore(newRow, freeSpaceRow);
-        }
-    }
-}
-
-// Обновление нумерации строк
-function updateRowNumbers() {
-    if (!window.tableBody) return;
-    
-    let rowNumber = 1;
-    const rows = window.tableBody.querySelectorAll('tr:not(.building-header):not(.separator):not(.free-space-row):not(.expanded-row)');
-    
-    rows.forEach(row => {
-        const rowNumberElement = row.querySelector('.row-number');
-        if (rowNumberElement) {
-            rowNumberElement.textContent = rowNumber;
-            
-            // Обновляем ID если это пользовательское поле
-            if (row.dataset.isCustom && row.dataset.fieldId) {
-                const field = window.customFields.find(f => f.id === row.dataset.fieldId);
-                if (field) {
-                    field.rowNumber = rowNumber;
-                }
-            }
-            
-            rowNumber++;
-        }
-    });
-    
-    window.nextRowNumber = rowNumber;
-}
-
-// Выход из системы
-function logout() {
-    if (confirm('Вы уверены, что хотите выйти?')) {
-        localStorage.removeItem('user');
-        localStorage.removeItem('role');
-        window.location.href = 'index.html';
-    }
-}
-
-// Навигация
-function showMainPage() {
-    alert('Вы находитесь на главной странице');
-}
-
-function showReports() {
-    alert('Раздел "Рапорты" находится в разработке');
-}
-
-function showDocuments() {
-    alert('Раздел "Отчеты" находится в разработке');
-}
-
-// Основная функция инициализации
-function init() {
-    console.log('Запуск функции init()...');
-    
-    // Инициализируем DOM элементы
-    initDOM();
-    
-    // Проверка авторизации
-    const userJson = localStorage.getItem('user');
-
-    if (!userJson) {
-        // если не залогинен — назад на логин
-        window.location.href = 'index.html';
-        return;
-    }
-
-    const user = JSON.parse(userJson);
-
-    // Проверка роли пользователя
-    if (user.role !== 'ENGINEER') {
-        alert('У вас нет прав для заполнения смены');
-        window.location.href = 'index.html';
-        return;
-    }
-
-    // Установка имени пользователя
-    const username = localStorage.getItem('username') || 'Иван Иванов';
-    if (window.currentUser) {
-        window.currentUser.textContent = username;
-    }
-    
-    // Устанавливаем текущую дату из системы
-    window.currentDate = getCurrentSystemDate();
-    updateDateDisplay();
-
-    // Загрузка сохраненного отчета
-    loadSavedReport();
-
-    // Обработчики событий
-    if (window.saveBtn) {
-        window.saveBtn.addEventListener('click', saveDate);
-    }
-    if (window.endShiftBtn) {
-        window.endShiftBtn.addEventListener('click', endShift);
-    }
-    if (window.zoomInBtn) {
-        window.zoomInBtn.addEventListener('click', zoomIn);
-    }
-    if (window.zoomOutBtn) {
-        window.zoomOutBtn.addEventListener('click', zoomOut);
-    }
-    if (window.printBtn) {
-        window.printBtn.addEventListener('click', printReport);
-    }
-
-    // Обработка горячих клавиш
-    document.addEventListener('keydown', (e) => {
-        // Ctrl + S для сохранения
-        if (e.ctrlKey && e.key === 's') {
-            e.preventDefault();
-            saveDate();
-        }
-
-        // Ctrl + P для печати
-        if (e.ctrlKey && e.key === 'p') {
-            e.preventDefault();
-            printReport();
-        }
-
-        // Ctrl + '+' для увеличения масштаба
-        if (e.ctrlKey && (e.key === '+' || e.key === '=')) {
-            e.preventDefault();
-            zoomIn();
-        }
-
-        // Ctrl + '-' для уменьшения масштаба
-        if (e.ctrlKey && e.key === '-') {
-            e.preventDefault();
-            zoomOut();
-        }
-
-        // Escape для закрытия свободного места
-        if (e.key === 'Escape') {
-            closeActiveFreeSpace();
-        }
-    });
-
-    // Закрытие свободного места при клике вне его
-    document.addEventListener('click', function(event) {
-        if (window.activeFreeSpace && !window.activeFreeSpace.contains(event.target)) {
-            const expandedRow = window.activeFreeSpace.nextElementSibling;
-            if (expandedRow && !expandedRow.contains(event.target)) {
-                closeActiveFreeSpace();
-            }
-        }
-    });
-
-    // Обновляем нумерацию строк
-    updateRowNumbers();
-    
-    console.log('Инициализация завершена');
-}
-
-// Запуск при загрузке страницы
-window.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM загружен, запускаем инициализацию...');
     init();
-})
+});
+
+// Остальные функции (toggleFreeSpace, handleMenuChange, и т.д.) остаются без изменений
