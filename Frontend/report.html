@@ -91,7 +91,7 @@
                             <th width="30%">1-я смена «7:00–15:00»</th>
                         </tr>
                     </thead>
-                    <tbody>
+                                        <tbody id="tableBody">
                         <!-- Здание 1 -->
                         <tr class="building-header">
                             <td colspan="2">Здание 1</td>
@@ -123,9 +123,12 @@
                             </td>
                         </tr>
 
-                        <tr>
+                        <!-- Свободное место после здания 1 -->
+                        <tr class="free-space-row" onclick="toggleFreeSpace(this)">
                             <td colspan="2">
-                                <div class="separator-line"></div>
+                                <div class="add-btn">
+                                    <i class="fas fa-plus-circle"></i> Добавить новую позицию
+                                </div>
                             </td>
                         </tr>
 
@@ -170,9 +173,12 @@
                             </td>
                         </tr>
 
-                        <tr>
+                        <!-- Свободное место после здания 2 -->
+                        <tr class="free-space-row" onclick="toggleFreeSpace(this)">
                             <td colspan="2">
-                                <div class="separator-line"></div>
+                                <div class="add-btn">
+                                    <i class="fas fa-plus-circle"></i> Добавить новую позицию
+                                </div>
                             </td>
                         </tr>
 
@@ -190,6 +196,15 @@
                             <td>
                                 <div style="display: flex; gap: 5px; justify-content: center;">
                                     <input type="text" class="data-input" id="data6-1">
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Свободное место в конце -->
+                        <tr class="free-space-row" onclick="toggleFreeSpace(this)">
+                            <td colspan="2">
+                                <div class="add-btn">
+                                    <i class="fas fa-plus-circle"></i> Добавить новую позицию
                                 </div>
                             </td>
                         </tr>
