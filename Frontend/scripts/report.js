@@ -619,27 +619,71 @@ function insertCustomField(fieldInfo, shiftValue) {
                 break;
             }
         }
-        
-        if (freeSpaceRow) {
+
+        // Обработчик изменения выпадающего меню
+        function handleMenuChange(selectElement) {
+            const container = document.getElementById('customFieldContainer');
+            
+            if (selectElement.value === 'manual') {
+                container.innerHTML = `
+                    <input type="text" class="custom-field-input" 
+                           placeholder="Введите название нового поля"
+                           onkeydown="handleCustomFieldKeydown(event, this)">
+                    <button class="btn" onclick="addCustomField(this)" style="margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Добавить поле
+                    </button>
+                `;
+            } else {
+                container.innerHTML = '';
+            }
+        }
+
+        // Обработчик нажатия клавиши Enter в поле ввода
+        function handleCustomFieldKeydown(event, inputElement) {
+            if (event.key === 'Enter') {
+                addCustomField(inputElement);
+            }
+        }
+
+        // Функция для добавления пользовательского поля
+        function addCustomField(buttonElement) {
+            const inputElement = buttonElement.previousElementSibling;
+            const fieldName = inputElement.value.trim();
+            
+            if (!fieldName) {
+                alert('Пожалуйста, введите название поля');
+                return;
+            }
+            
+            // Находим текущий блок свободного места
+            const freeSpaceRow = buttonElement.closest('.expanded-content').parentElement.parentElement.previousElementSibling;
+            const tableBody = document.getElementById('tableBody');
+            
             // Создаем новую строку с полем
             const newRow = document.createElement('tr');
-            newRow.dataset.fieldId = fieldInfo.id;
-            newRow.dataset.isCustom = 'true';
             newRow.innerHTML = `
                 <td>
-                    <span class="row-number">${fieldInfo.rowNumber}</span>
-                    ${fieldInfo.name}
-                    ${fieldInfo.unit ? `<div class="sub-description">${fieldInfo.unit}</div>` : ''}
+                    <span class="row-number">${nextRowNumber}</span>
+                    ${fieldName}
                 </td>
                 <td>
                     <div style="display: flex; gap: 5px; justify-content: center;">
-                        <input type="text" class="data-input" id="${fieldInfo.id}_shift" value="${shiftValue || ''}">
+                        <input type="text" class="data-input" id="data${nextRowNumber}-1">
                     </div>
                 </td>
             `;
             
+            // Увеличиваем номер следующей строки
+            nextRowNumber++;
+            
             // Вставляем новую строку перед блоком свободного места
             tableBody.insertBefore(newRow, freeSpaceRow);
+            
+            // Закрываем расширенное содержимое
+            closeActiveFreeSpace();
+            
+            // Показываем сообщение об успешном добавлении
+            showStatusMessage(`Поле "${fieldName}" успешно добавлено`, 'success');
         }
     }
 }
