@@ -381,12 +381,6 @@ function handleMenuChange(selectElement) {
                         <option value="кг">кг</option>
                         <option value="м³">м³</option>
                         <option value="шт">шт</option>
-                        <option value="л">л</option>
-                        <option value="т">т</option>
-                        <option value="г">г</option>
-                        <option value="ед">ед</option>
-                        <option value="пак">пак</option>
-                        <option value="бут">бут</option>
                         <option value="custom">Другая...</option>
                     </select>
                 </div>
