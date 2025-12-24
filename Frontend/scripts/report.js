@@ -297,3 +297,148 @@
         //     alert('У вас нет прав для заполнения смены');
         //     window.location.href = 'index.html';
         // }
+
+
+
+        // Переменная для отслеживания текущего активного свободного места
+        let activeFreeSpace = null;
+        let nextRowNumber = 7; // Следующий номер строки после существующих
+
+        // Функция для переключения свободного места
+        function toggleFreeSpace(element) {
+            const tableBody = document.getElementById('tableBody');
+            const row = element.closest('tr');
+            
+            // Если уже активно другое свободное место - закрываем его
+            if (activeFreeSpace && activeFreeSpace !== row) {
+                closeActiveFreeSpace();
+            }
+            
+            // Если текущее место уже активно - закрываем
+            if (row.classList.contains('active')) {
+                closeActiveFreeSpace();
+                return;
+            }
+            
+            // Активируем текущее место
+            row.classList.add('active');
+            activeFreeSpace = row;
+            
+            // Создаем расширенное содержимое
+            const expandedRow = document.createElement('tr');
+            expandedRow.className = 'expanded-row';
+            expandedRow.innerHTML = `
+                <td colspan="2">
+                    <div class="expanded-content">
+                        <select class="dropdown-menu" onchange="handleMenuChange(this)">
+                            <option value="">------------------</option>
+                            <option value="manual">Ввести вручную</option>
+                        </select>
+                        <div id="customFieldContainer"></div>
+                    </div>
+                </td>
+            `;
+            
+            // Вставляем расширенное содержимое после текущей строки
+            row.parentNode.insertBefore(expandedRow, row.nextSibling);
+        }
+
+        // Функция для закрытия активного свободного места
+        function closeActiveFreeSpace() {
+            if (activeFreeSpace) {
+                activeFreeSpace.classList.remove('active');
+                const expandedRow = activeFreeSpace.nextElementSibling;
+                if (expandedRow && expandedRow.classList.contains('expanded-row')) {
+                    expandedRow.remove();
+                }
+                activeFreeSpace = null;
+            }
+        }
+
+        // Обработчик изменения выпадающего меню
+        function handleMenuChange(selectElement) {
+            const container = document.getElementById('customFieldContainer');
+            
+            if (selectElement.value === 'manual') {
+                container.innerHTML = `
+                    <input type="text" class="custom-field-input" 
+                           placeholder="Введите название нового поля"
+                           onkeydown="handleCustomFieldKeydown(event, this)">
+                    <button class="btn" onclick="addCustomField(this)" style="margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Добавить поле
+                    </button>
+                `;
+            } else {
+                container.innerHTML = '';
+            }
+        }
+
+        // Обработчик нажатия клавиши Enter в поле ввода
+        function handleCustomFieldKeydown(event, inputElement) {
+            if (event.key === 'Enter') {
+                addCustomField(inputElement);
+            }
+        }
+
+        // Функция для добавления пользовательского поля
+        function addCustomField(buttonElement) {
+            const inputElement = buttonElement.previousElementSibling;
+            const fieldName = inputElement.value.trim();
+            
+            if (!fieldName) {
+                alert('Пожалуйста, введите название поля');
+                return;
+            }
+            
+            // Находим текущий блок свободного места
+            const freeSpaceRow = buttonElement.closest('.expanded-content').parentElement.parentElement.previousElementSibling;
+            const tableBody = document.getElementById('tableBody');
+            
+            // Создаем новую строку с полем
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>
+                    <span class="row-number">${nextRowNumber}</span>
+                    ${fieldName}
+                </td>
+                <td>
+                    <div style="display: flex; gap: 5px; justify-content: center;">
+                        <input type="text" class="data-input" id="data${nextRowNumber}-1">
+                    </div>
+                </td>
+            `;
+            
+            // Увеличиваем номер следующей строки
+            nextRowNumber++;
+            
+            // Вставляем новую строку перед блоком свободного места
+            tableBody.insertBefore(newRow, freeSpaceRow);
+            
+            // Закрываем расширенное содержимое
+            closeActiveFreeSpace();
+            
+            // Показываем сообщение об успешном добавлении
+            showStatusMessage(`Поле "${fieldName}" успешно добавлено`, 'success');
+        }
+
+        // Функция для показа статусных сообщений
+        function showStatusMessage(message, type) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+            statusElement.className = `status-message ${type}`;
+            statusElement.style.display = 'block';
+            
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 3000);
+        }
+
+        // Закрытие свободного места при клике вне его
+        document.addEventListener('click', function(event) {
+            if (activeFreeSpace && !activeFreeSpace.contains(event.target)) {
+                const expandedRow = activeFreeSpace.nextElementSibling;
+                if (expandedRow && !expandedRow.contains(event.target)) {
+                    closeActiveFreeSpace();
+                }
+            }
+        });

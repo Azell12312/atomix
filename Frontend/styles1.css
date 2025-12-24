@@ -146,6 +146,7 @@ body {
 
 /* Основной контейнер */
 .main-container {
+    
     flex: 1;
     max-width: 1200px;
     background-color: white;
