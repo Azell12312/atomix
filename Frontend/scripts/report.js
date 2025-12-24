@@ -343,102 +343,163 @@
             row.parentNode.insertBefore(expandedRow, row.nextSibling);
         }
 
-        // Функция для закрытия активного свободного места
-        function closeActiveFreeSpace() {
-            if (activeFreeSpace) {
-                activeFreeSpace.classList.remove('active');
-                const expandedRow = activeFreeSpace.nextElementSibling;
-                if (expandedRow && expandedRow.classList.contains('expanded-row')) {
-                    expandedRow.remove();
-                }
-                activeFreeSpace = null;
+// Функция для добавления пользовательского поля
+function addCustomField(buttonElement) {
+    const container = buttonElement.closest('#customFieldContainer');
+    const nameInput = container.querySelector('.field-name-input');
+    const unitInput = container.querySelector('.unit-input');
+    
+    const fieldName = nameInput.value.trim();
+    const unit = unitInput.value.trim();
+    
+    if (!fieldName) {
+        alert('Пожалуйста, введите название поля');
+        return;
+    }
+    
+    // Находим текущий блок свободного места
+    const freeSpaceRow = container.closest('.expanded-content').parentElement.parentElement.previousElementSibling;
+    
+    // Создаем ID для нового поля
+    const fieldId = `custom_${fieldIdCounter}`;
+    fieldIdCounter++;
+    
+    // Создаем новую строку с полем
+    const newRow = document.createElement('tr');
+    newRow.dataset.fieldId = fieldId;
+    newRow.dataset.isCustom = 'true';
+    newRow.innerHTML = `
+        <td>
+            <span class="row-number">${nextRowNumber}</span>
+            ${fieldName}
+            ${unit ? `<div class="sub-description">${unit}</div>` : ''}
+        </td>
+        <td>
+            <div style="display: flex; gap: 5px; justify-content: center;">
+                <input type="text" class="data-input" id="${fieldId}_shift">
+            </div>
+        </td>
+    `;
+    
+    // Добавляем информацию о поле в массив
+    customFields.push({
+        id: fieldId,
+        name: fieldName,
+        unit: unit,
+        rowNumber: nextRowNumber,
+        building: getCurrentBuilding(freeSpaceRow)
+    });
+    
+    // Увеличиваем номер следующей строки
+    nextRowNumber++;
+    
+    // Вставляем новую строку перед блоком свободного места
+    tableBody.insertBefore(newRow, freeSpaceRow);
+    
+    // Закрываем расширенное содержимое
+    closeActiveFreeSpace();
+    
+    // Показываем сообщение об успешном добавлении
+    showStatusMessage(`Поле "${fieldName}" успешно добавлено`, 'success');
+    
+    // Автоматически сохраняем после добавления поля
+    setTimeout(saveDate, 500);
+}
+
+// Обновляем функцию сохранения данных для учета единиц измерения
+function collectReportData() {
+    const reportData = {
+        date: formatDateKey(currentDate),
+        building1: {
+            item1: { 
+                shift: document.getElementById('data1-1')?.value || ''
+            },
+            item2: { 
+                shift: document.getElementById('data2-1')?.value || ''
+            }
+        },
+        building2: {
+            item3: { 
+                shift: document.getElementById('data3-1')?.value || ''
+            },
+            item4: { 
+                shift: document.getElementById('data4-1')?.value || ''
+            },
+            item5: { 
+                shift: document.getElementById('data5-1')?.value || ''
+            }
+        },
+        building3: {
+            item6: { 
+                shift: document.getElementById('data6-1')?.value || ''
+            }
+        },
+        timestamp: new Date().toISOString(),
+        operator: currentUser.textContent
+    };
+
+    // Добавляем данные из пользовательских полей
+    customFields.forEach(field => {
+        if (!reportData.customFieldsData) {
+            reportData.customFieldsData = {};
+        }
+        reportData.customFieldsData[field.id] = {
+            name: field.name,
+            unit: field.unit,
+            shift: document.getElementById(`${field.id}_shift`)?.value || '',
+            building: field.building
+        };
+    });
+
+    return reportData;
+}
+
+// Обновляем функцию загрузки пользовательских полей
+function insertCustomField(fieldInfo, shiftValue) {
+    // Находим соответствующее здание
+    const buildingHeaders = tableBody.querySelectorAll('.building-header');
+    let targetBuildingRow = null;
+    
+    for (let header of buildingHeaders) {
+        if (header.querySelector('td').textContent.trim() === fieldInfo.building) {
+            targetBuildingRow = header;
+            break;
+        }
+    }
+    
+    if (targetBuildingRow) {
+        // Находим следующую свободную строку после этого здания
+        let currentRow = targetBuildingRow;
+        let freeSpaceRow = null;
+        
+        while (currentRow.nextElementSibling) {
+            currentRow = currentRow.nextElementSibling;
+            if (currentRow.classList.contains('free-space-row')) {
+                freeSpaceRow = currentRow;
+                break;
             }
         }
-
-        // Обработчик изменения выпадающего меню
-        function handleMenuChange(selectElement) {
-            const container = document.getElementById('customFieldContainer');
-            
-            if (selectElement.value === 'manual') {
-                container.innerHTML = `
-                    <input type="text" class="custom-field-input" 
-                           placeholder="Введите название нового поля"
-                           onkeydown="handleCustomFieldKeydown(event, this)">
-                    <button class="btn" onclick="addCustomField(this)" style="margin-top: 10px;">
-                        <i class="fas fa-plus"></i> Добавить поле
-                    </button>
-                `;
-            } else {
-                container.innerHTML = '';
-            }
-        }
-
-        // Обработчик нажатия клавиши Enter в поле ввода
-        function handleCustomFieldKeydown(event, inputElement) {
-            if (event.key === 'Enter') {
-                addCustomField(inputElement);
-            }
-        }
-
-        // Функция для добавления пользовательского поля
-        function addCustomField(buttonElement) {
-            const inputElement = buttonElement.previousElementSibling;
-            const fieldName = inputElement.value.trim();
-            
-            if (!fieldName) {
-                alert('Пожалуйста, введите название поля');
-                return;
-            }
-            
-            // Находим текущий блок свободного места
-            const freeSpaceRow = buttonElement.closest('.expanded-content').parentElement.parentElement.previousElementSibling;
-            const tableBody = document.getElementById('tableBody');
-            
+        
+        if (freeSpaceRow) {
             // Создаем новую строку с полем
             const newRow = document.createElement('tr');
+            newRow.dataset.fieldId = fieldInfo.id;
+            newRow.dataset.isCustom = 'true';
             newRow.innerHTML = `
                 <td>
-                    <span class="row-number">${nextRowNumber}</span>
-                    ${fieldName}
+                    <span class="row-number">${fieldInfo.rowNumber}</span>
+                    ${fieldInfo.name}
+                    ${fieldInfo.unit ? `<div class="sub-description">${fieldInfo.unit}</div>` : ''}
                 </td>
                 <td>
                     <div style="display: flex; gap: 5px; justify-content: center;">
-                        <input type="text" class="data-input" id="data${nextRowNumber}-1">
+                        <input type="text" class="data-input" id="${fieldInfo.id}_shift" value="${shiftValue || ''}">
                     </div>
                 </td>
             `;
             
-            // Увеличиваем номер следующей строки
-            nextRowNumber++;
-            
             // Вставляем новую строку перед блоком свободного места
             tableBody.insertBefore(newRow, freeSpaceRow);
-            
-            // Закрываем расширенное содержимое
-            closeActiveFreeSpace();
-            
-            // Показываем сообщение об успешном добавлении
-            showStatusMessage(`Поле "${fieldName}" успешно добавлено`, 'success');
         }
-
-        // Функция для показа статусных сообщений
-        function showStatusMessage(message, type) {
-            const statusElement = document.getElementById('statusMessage');
-            statusElement.textContent = message;
-            statusElement.className = `status-message ${type}`;
-            statusElement.style.display = 'block';
-            
-            setTimeout(() => {
-                statusElement.style.display = 'none';
-            }, 3000);
-        }
-
-        // Закрытие свободного места при клике вне его
-        document.addEventListener('click', function(event) {
-            if (activeFreeSpace && !activeFreeSpace.contains(event.target)) {
-                const expandedRow = activeFreeSpace.nextElementSibling;
-                if (expandedRow && !expandedRow.contains(event.target)) {
-                    closeActiveFreeSpace();
-                }
-            }
-        });
+    }
+}
