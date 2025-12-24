@@ -12,6 +12,7 @@ import com.students.atomix.model.ReportItemInstance;
 import com.students.atomix.model.ReportItemTemplate;
 import com.students.atomix.model.ReportValue;
 import com.students.atomix.model.ShiftSession;
+import com.students.atomix.model.ShiftStatus;
 import com.students.atomix.repository.ReportItemInstanceRepository;
 import com.students.atomix.repository.ReportItemTemplateRepository;
 import com.students.atomix.repository.ReportValueRepository;
@@ -39,9 +40,15 @@ public class ReportService {
     @Transactional
     public void saveReport(ReportSaveRequestDTO request) {
 
+    	
         ShiftSession session = shiftSessionRepository.findById(request.getShiftSessionId())
                 .orElseThrow(() -> new RuntimeException("SHIFT_SESSION_NOT_FOUND"));
 
+        // If shift already closed dont allow to paste new values
+        if (session.getStatus() == ShiftStatus.CLOSED) {
+            throw new RuntimeException("SHIFT_CLOSED");
+        }
+        
         // shiftDate всегда берём из session
         LocalDate shiftDate = session.getShiftDate();
 
