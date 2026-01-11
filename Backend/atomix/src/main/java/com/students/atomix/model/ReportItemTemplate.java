@@ -15,23 +15,16 @@ public class ReportItemTemplate {
 
     private String unit;
 
-    @Column(name = "is_inventory", nullable = false)
-    private boolean isInventory;
+    @Column(name = "is_inventory")
+    private Boolean isInventory;
 
     @Column(name = "building_id")
     private Long buildingId;
 
-    @Column(nullable = false)
-    private boolean active;
-
-    // getters / setters
+    private boolean active = true;
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -42,12 +35,20 @@ public class ReportItemTemplate {
         this.title = title;
     }
 
-    public boolean isInventory() {
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public Boolean getIsInventory() {
         return isInventory;
     }
 
-    public void setIsInventory(boolean inventory) {
-        this.isInventory = inventory;
+    public void setIsInventory(Boolean isInventory) {
+        this.isInventory = isInventory;
     }
 
     public Long getBuildingId() {

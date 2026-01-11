@@ -380,6 +380,44 @@ body {
     margin: 15px 0;
 }
 
+.shift-gate{
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+.shift-gate-card{
+  width: min(520px, 92vw);
+  background: #fff;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+.shift-gate-label{ display:block; margin:12px 0 6px; font-weight:600; }
+.shift-gate-input{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+}
+.shift-gate-hint{ margin-top: 10px; font-size: 13px; opacity: .85; }
+
+.shift-badge{
+  margin-top: 6px;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  display: inline-block;
+  background: rgba(0,0,0,.06);
+}
+
+.status-message.success-message{ background: #e7f7ee; color:#126b34; }
+.status-message.error-message{ background: #fdecec; color:#8a1f1f; }
+.status-message.info-message{ background: #eef4ff; color:#173a7a; }
+
+
+
 @media print {
     .no-print {
         display: none !important;
@@ -401,3 +439,7 @@ body {
         display: none !important;
     }
 }
+
+
+
+

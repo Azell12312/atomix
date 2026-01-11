@@ -10,6 +10,31 @@
 </head>
 
 <body>
+    <!-- Показывается пока смена не начата) -->
+    <div id="shiftGate" class="shift-gate no-print" style="display:none;">
+        <div class="shift-gate-card">
+            <h2>Начало смены</h2>
+            <p>Чтобы заполнить отчёт, сначала начните смену.</p>
+
+            <label class="shift-gate-label">Ваш ID</label>
+            <input id="userIdInput" class="shift-gate-input" type="number" min="1" placeholder="например 12">
+
+            <label class="shift-gate-label">Код смены</label>
+            <input id="shiftIdInput" class="shift-gate-input" type="number" min="1" value="1">
+
+            <label class="shift-gate-label">Код участка</label>
+            <input id="sectionIdInput" class="shift-gate-input" type="number" min="1" value="1">
+
+            <button id="startShiftBtn" class="btn btn-save">
+                <i class="fas fa-play"></i> Начать смену
+            </button>
+
+            <div id="shiftGateHint" class="shift-gate-hint"></div>
+        </div>
+    </div>
+
+
+
     <!-- Левая панель -->
     <div class="left-panel">
         <div class="panel-header">
@@ -23,7 +48,7 @@
         <div class="user-section">
             <div class="user-name">
                 <i class="fas fa-user-circle"></i>
-                <span id="currentUser">Иван Иванов</span>
+                <span id="currentUser">Иван Степанович</span>
             </div>
         </div>
 
@@ -55,6 +80,7 @@
         <div class="header">
             <div class="date-section">
                 <div class="date-display" id="dateDisplay">Загрузка даты...</div>
+                <div id="shiftBadge" class="shift-badge no-print" style="display:none;"></div>
                 <button class="btn btn-save no-print" id="saveBtn">
                     <i class="fas fa-save"></i> Сохранить
                 </button>
@@ -88,10 +114,10 @@
                     <thead>
                         <tr>
                             <th width="70%">Наименование отчетной позиции</th>
-                            <th width="30%">1-я смена «7:00–15:00»</th>
+                            <th width="30%">3-я смена «0:00–7:30»</th>
                         </tr>
                     </thead>
-                                        <tbody id="tableBody">
+                    <tbody id="tableBody">
                         <!-- Здание 1 -->
                         <tr class="building-header">
                             <td colspan="2">Здание 1</td>
@@ -124,13 +150,13 @@
                         </tr>
 
                         <!-- Свободное место после здания 1 -->
-<tr class="free-space-row">
-    <td colspan="2">
-        <div class="btn add-field-btn" onclick="toggleFreeSpace(this)">
-            <i class="fas fa-plus-circle"></i> Добавить новую позицию
-        </div>
-    </td>
-</tr>
+                        <tr class="free-space-row">
+                            <td colspan="2">
+                                <div class="btn add-field-btn" onclick="toggleFreeSpace(this)">
+                                    <i class="fas fa-plus-circle"></i> Добавить новую позицию
+                                </div>
+                            </td>
+                        </tr>
 
                         <!-- Здание 2 -->
                         <tr class="building-header">
@@ -174,13 +200,13 @@
                         </tr>
 
                         <!-- Свободное место после здания 2 -->
-<tr class="free-space-row">
-    <td colspan="2">
-        <div class="btn add-field-btn" onclick="toggleFreeSpace(this)">
-            <i class="fas fa-plus-circle"></i> Добавить новую позицию
-        </div>
-    </td>
-</tr>
+                        <tr class="free-space-row">
+                            <td colspan="2">
+                                <div class="btn add-field-btn" onclick="toggleFreeSpace(this)">
+                                    <i class="fas fa-plus-circle"></i> Добавить новую позицию
+                                </div>
+                            </td>
+                        </tr>
 
                         <!-- Здание 3 -->
                         <tr class="building-header">
@@ -201,13 +227,13 @@
                         </tr>
 
                         <!-- Свободное место в конце -->
-<tr class="free-space-row">
-    <td colspan="2">
-        <div class="btn add-field-btn" onclick="toggleFreeSpace(this)">
-            <i class="fas fa-plus-circle"></i> Добавить новую позицию
-        </div>
-    </td>
-</tr>
+                        <tr class="free-space-row">
+                            <td colspan="2">
+                                <div class="btn add-field-btn" onclick="toggleFreeSpace(this)">
+                                    <i class="fas fa-plus-circle"></i> Добавить новую позицию
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
