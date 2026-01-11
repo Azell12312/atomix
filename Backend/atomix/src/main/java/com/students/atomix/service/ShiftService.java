@@ -18,14 +18,15 @@ import com.students.atomix.repository.SectionRepository;
 import com.students.atomix.repository.ShiftRepository;
 import com.students.atomix.repository.ShiftSessionRepository;
 
-@Service
+@Service // Сервис с логикой работы со сменами
 public class ShiftService {
 
-	private final ShiftSessionRepository shiftSessionRepository;
-	private final ShiftRepository shiftRepository;
-	private final AppUserRepository userRepository;
-	private final SectionRepository sectionRepository;
+	private final ShiftSessionRepository shiftSessionRepository; // Сессии смен
+	private final ShiftRepository shiftRepository; // Типы смен
+	private final AppUserRepository userRepository; // Пользователи
+	private final SectionRepository sectionRepository; // Участки / секции
 
+	// Внедрение репозиториев
 	public ShiftService(ShiftSessionRepository shiftSessionRepository, ShiftRepository shiftRepository,
 			AppUserRepository userRepository, SectionRepository sectionRepository) {
 		this.shiftSessionRepository = shiftSessionRepository;
@@ -34,52 +35,63 @@ public class ShiftService {
 		this.sectionRepository = sectionRepository;
 	}
 
-	@Transactional
+	@Transactional // Вся операция запуска смены — одна транзакция
 	public ShiftStartResponseDTO startShift(ShiftStartRequestDTO dto) {
 
-		// Check if session is already started
-		shiftSessionRepository.findTopByUserIdAndStatusOrderByStartedAtDesc(dto.getUserId(), ShiftStatus.OPEN)
+		// Проверяем, нет ли уже открытой смены у пользователя
+		shiftSessionRepository
+				.findTopByUserIdAndStatusOrderByStartedAtDesc(dto.getUserId(), ShiftStatus.OPEN)
 				.ifPresent(s -> {
 					throw new RuntimeException("SHIFT_ALREADY_OPEN");
 				});
 
+		// Получаем смену по id
 		Shift shift = shiftRepository.findById(dto.getShiftId())
 				.orElseThrow(() -> new RuntimeException("SHIFT_NOT_FOUND"));
 
+		// Получаем пользователя
 		AppUser user = userRepository.findById(dto.getUserId())
 				.orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
 
+		// Получаем секцию
 		Section section = sectionRepository.findById(dto.getSectionId())
 				.orElseThrow(() -> new RuntimeException("SECTION_NOT_FOUND"));
 
+		// Создаём новую сессию смены
 		ShiftSession session = new ShiftSession();
-		session.setShiftDate(LocalDate.now());
+		session.setShiftDate(LocalDate.now()); // Дата смены
 		session.setShift(shift);
 		session.setUser(user);
 		session.setSection(section);
 
-		session.setStatus(ShiftStatus.OPEN);
-		session.setStartedAt(LocalDateTime.now());
-		session.setClosedAt(null);
+		session.setStatus(ShiftStatus.OPEN); // Смена открыта
+		session.setStartedAt(LocalDateTime.now()); // Время начала
+		session.setClosedAt(null); // Время закрытия пока нет
 
+		// Сохраняем сессию в БД
 		session = shiftSessionRepository.save(session);
 
+		// Возвращаем id созданной сессии
 		return new ShiftStartResponseDTO(session.getId());
 	}
 
-	@Transactional
+	@Transactional // Закрытие смены
 	public void closeShift(Long shiftSessionId) {
 
+		// Ищем сессию по id
 		ShiftSession session = shiftSessionRepository.findById(shiftSessionId)
 				.orElseThrow(() -> new RuntimeException("SHIFT_SESSION_NOT_FOUND"));
 
+		// Если смена уже закрыта — ничего не делаем
 		if (session.getStatus() == ShiftStatus.CLOSED) {
-			return; // уже закрыта — ничего не делаем
+			return;
 		}
 
+		// Закрываем смену
 		session.setStatus(ShiftStatus.CLOSED);
 		session.setClosedAt(LocalDateTime.now());
 
+		// Сохраняем изменения
 		shiftSessionRepository.save(session);
 	}
 
