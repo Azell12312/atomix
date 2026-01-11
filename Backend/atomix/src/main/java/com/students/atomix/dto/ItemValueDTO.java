@@ -3,7 +3,7 @@ package com.students.atomix.dto;
 public class ItemValueDTO {
 
 	private Long templateId;
-    private Long buildingId;      // или sectionId — по смыслу
+    private Long buildingId;      
     private String title;         // для временных строк
     private String unit;          // для временных строк
     private Double valueNumber;

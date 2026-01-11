@@ -18,14 +18,15 @@ import com.students.atomix.repository.ReportItemTemplateRepository;
 import com.students.atomix.repository.ReportValueRepository;
 import com.students.atomix.repository.ShiftSessionRepository;
 
-@Service
+@Service // Сервис с логикой сохранения отчёта
 public class ReportService {
 
-    private final ShiftSessionRepository shiftSessionRepository;
-    private final ReportItemTemplateRepository templateRepository;
-    private final ReportItemInstanceRepository instanceRepository;
-    private final ReportValueRepository valueRepository;
+    private final ShiftSessionRepository shiftSessionRepository; // Работа со сменами
+    private final ReportItemTemplateRepository templateRepository; // Шаблоны отчёта
+    private final ReportItemInstanceRepository instanceRepository; // Экземпляры пунктов
+    private final ReportValueRepository valueRepository; // Значения пунктов
 
+    // Внедрение репозиториев
     public ReportService(
             ShiftSessionRepository shiftSessionRepository,
             ReportItemTemplateRepository templateRepository,
@@ -37,24 +38,25 @@ public class ReportService {
         this.valueRepository = valueRepository;
     }
 
-    @Transactional
+    @Transactional // Все операции выполняются одной транзакцией
     public void saveReport(ReportSaveRequestDTO request) {
 
-    	
+        // Получаем смену по id
         ShiftSession session = shiftSessionRepository.findById(request.getShiftSessionId())
                 .orElseThrow(() -> new RuntimeException("SHIFT_SESSION_NOT_FOUND"));
 
-        // If shift already closed dont allow to paste new values
+        // Если смена закрыта — запрещаем сохранение
         if (session.getStatus() == ShiftStatus.CLOSED) {
             throw new RuntimeException("SHIFT_CLOSED");
         }
         
-        // shiftDate всегда берём из session
+        // Дата смены берётся из самой смены
         LocalDate shiftDate = session.getShiftDate();
 
+        // Проходим по всем пунктам отчёта
         for (ItemValueDTO item : request.getItems()) {
 
-            // sectionId (пока используем buildingId как sectionId — как ты и описал)
+            // Определяем sectionId
             Long sectionId = item.getBuildingId() != null
                     ? item.getBuildingId()
                     : session.getSection().getId();
@@ -62,18 +64,18 @@ public class ReportService {
             // --- 1) TEMPLATE ---
             ReportItemTemplate template = null;
 
-            // 1.1 попытка по id (если совпадает)
+            // Пытаемся найти шаблон по id
             if (item.getTemplateId() != null) {
                 template = templateRepository.findById(item.getTemplateId()).orElse(null);
             }
 
-            // 1.2 fallback если id не совпадает
+            // Если не нашли — ищем по названию и зданию
             if (template == null && item.getTitle() != null && item.getBuildingId() != null) {
                 template = templateRepository.findByTitleAndBuildingId(item.getTitle(), item.getBuildingId())
                         .orElse(null);
             }
 
-            // 1.3 если это временная строка и template не найден — создаём temp template
+            // Если шаблон временный — создаём новый
             if (template == null && item.getTitle() != null) {
                 template = new ReportItemTemplate();
                 template.setTitle("[TEMP] " + item.getTitle());
@@ -84,19 +86,22 @@ public class ReportService {
                 template = templateRepository.save(template);
             }
 
-            // если так и не нашли — пропускаем (нет возможности сохранить)
+            // Если шаблон так и не найден — пропускаем пункт
             if (template == null) {
                 continue;
             }
 
             // --- 2) INSTANCE ---
             Optional<ReportItemInstance> existingInstance =
-                    instanceRepository.findByShiftDateAndSectionIdAndTemplateId(shiftDate, sectionId, template.getId());
+                    instanceRepository.findByShiftDateAndSectionIdAndTemplateId(
+                            shiftDate, sectionId, template.getId());
 
             ReportItemInstance instance;
             if (existingInstance.isPresent()) {
+                // Используем существующий экземпляр
                 instance = existingInstance.get();
             } else {
+                // Создаём новый экземпляр
                 ReportItemInstance inst = new ReportItemInstance();
                 inst.setShiftDate(shiftDate);
                 inst.setSectionId(sectionId);
@@ -105,17 +110,19 @@ public class ReportService {
                 instance = instanceRepository.save(inst);
             }
 
-            // --- 3) VALUE (UPSERT) ---
+            // --- 3) VALUE ---
+            // Ищем значение или создаём новое
             ReportValue value = valueRepository
                     .findByShiftSessionIdAndItemInstanceId(session.getId(), instance.getId())
                     .orElseGet(ReportValue::new);
 
+            // Заполняем данные значения
             value.setShiftSession(session);
             value.setItemInstance(instance);
-
             value.setValueNumber(item.getValueNumber());
             value.setValueText(item.getValueText());
 
+            // Сохраняем значение
             valueRepository.save(value);
         }
     }
